@@ -1,4 +1,8 @@
-#define short charCodes[5] = {0x01050501};
+#include "LCC-Driver.h"
+#include <avr/io.h>
+#include <util/delay.h>
+	
+
 /* LCD Control and Status Register B */
 #define LCDCRB	_SFR_MEM8(0xE5)
 #define LCDCS	7
@@ -39,6 +43,9 @@
 #define LCDCCD	1
 #define LCDBL	0
 
+#define LCDDR19 _SFR_MEM8(0x1F)  // Byteaddress för LCDDR19
+
+
 void LCD_Init(void){
 	//Use 32 kHz crystal oscillator
 	//1/3 Bias and 1/4 duty, SEG0:SEG24 is used as port pins
@@ -59,18 +66,46 @@ void LCD_update(unsigned char data1, unsigned char data2){
 	LCDDR6 = data2;
 }
 
-void writeChar(int ch, int pos){
-	if(pos < 0 && pos > 5){
+unsigned char charCodes[10][4] = {
+	{0x1,0x5,0x5,0x1}, // 0
+	{0x0,0x8,0x0,0x2}, // 1
+	{0x1,0x1,0xE,0x1}, // 2
+	{0x1,0x1,0xB,0x1}, // 3
+	{0x0,0x5,0xB,0x0}, // 4
+	{0x1,0x4,0xB,0x1}, // 5
+	{0x0,0x4,0xF,0x1}, // 6
+	{0x1,0x1,0x9,0x0}, // 7
+	{0x1,0x5,0xF,0x1}, // 8
+	{0x1,0x5,0xB,0x0}, // 9
+	};
+
+unsigned char offsetPos[6] = {
+	0,0,1,1,2,2,3,3
+};
+
+
+void writeChar(char ch, int pos){
+	if(pos < 0 || pos > 5 || ch < 48 || ch > 57){
 		return;
 	}
-	if(ch < 48 || ch > 57){
-		return;
+	volatile uint8_t *lcd_base = &LCDDR0 + offsetPos[pos];
+	
+	int number = (int)ch - 48;
+	int shift = 0;
+	if (pos % 2 == 1){
+		shift = 4;
+		lcd_base[0]  = lcd_base[0]  & 0x0F;
+		lcd_base[5]  = lcd_base[5]  & 0x0F;
+		lcd_base[10] = lcd_base[10] & 0x0F;
+		lcd_base[15] = lcd_base[15] & 0x0F;
+	}else{
+		lcd_base[0]  = lcd_base[0]  & 0xF0;
+		lcd_base[5]  = lcd_base[5]  & 0xF0;
+		lcd_base[10] = lcd_base[10] & 0xF0;
+		lcd_base[15] = lcd_base[15] & 0xF0;
 	}
-	LCDDR19:0 = 0x01;
-	LCDDR19:5 = 0x05;
-	LCDDR19:10 = 0x05;
-	LCDDR19:15 = 0x01;
-	
-	
-	
+	lcd_base[0]  = charCodes[number][0]<<shift | lcd_base[0] ;
+	lcd_base[5]  = charCodes[number][1]<<shift | lcd_base[5] ;
+	lcd_base[10] = charCodes[number][2]<<shift | lcd_base[10];
+	lcd_base[15] = charCodes[number][3]<<shift | lcd_base[15];
 }

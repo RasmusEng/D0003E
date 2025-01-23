@@ -13,6 +13,6 @@ void LCD_Init(void);
 
 void LCD_update(unsigned char data1, unsigned char data2);
 
-void writeChar(int ch, int pos);
+void writeChar(char ch, int pos);
 
 #endif /* LCC-Driver_ */
