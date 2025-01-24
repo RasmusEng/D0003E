@@ -1,6 +1,7 @@
 #include "LCC-Driver.h"
 #include <avr/io.h>
 #include <util/delay.h>
+#include <stdbool.h>
 
 static unsigned char charCodes[10][4] = {
 	{0x1,0x5,0x5,0x1}, // 0
@@ -71,16 +72,24 @@ void writeChar(char ch, int pos){
 void writeLong(long i){
 	if(i == 0){
 		writeChar('0', 6);	
+		return
 	}
 	char chars[7];
 	
 	for(int j = 0; j<6; j++){
-		chars[j] = i & 0xFF;
+		chars[j] = i%10;
+		i /= 10;
 	}
 	
+	bool importantNum = false;
 	for(int j = 6; j>-1; j--){
-		if(chars[j] != '0'){
-			writeChar(chars[j],j);
+		if(!importantNum){
+			if(chars[j] == 0){
+				continue;
+			}else{
+				importantNum = true;
+			}
 		}
+		writeChar(chars[j],j);
 	}
 }
