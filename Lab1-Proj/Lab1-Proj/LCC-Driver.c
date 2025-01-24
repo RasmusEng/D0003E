@@ -1,50 +1,19 @@
 #include "LCC-Driver.h"
 #include <avr/io.h>
 #include <util/delay.h>
-	
 
-/* LCD Control and Status Register B */
-#define LCDCRB	_SFR_MEM8(0xE5)
-#define LCDCS	7
-#define LCD2B	6
-#define LCDMUX1	5
-#define LCDMUX0	4
-#define LCDPM2	2
-#define LCDPM1	1
-#define LCDPM0	0
-
-/* LCD Frame Rate Register */
-#define LCDFRR	_SFR_MEM8(0xE6)
-#define LCDPS2	6
-#define LCDPS1	5
-#define LCDPS0	4
-#define LCDCD2	2
-#define LCDCD1	1
-#define LCDCD0	0
-
-/* LCD Contrast Control Register */
-#define LCDCCR	_SFR_MEM8(0xE7)
-#define LCDDC2	7
-#define LCDDC1	6
-#define LCDDC0	5
-#define LCDMDT	4
-#define LCDCC3	3
-#define LCDCC2	2
-#define LCDCC1	1
-#define LCDCC0	0
-
-/* LCD Control and Status Register A */
-#define LCDCRA	_SFR_MEM8(0xE4)
-#define LCDEN	7
-#define LCDAB	6
-#define LCDIF	4
-#define LCDIE	3
-#define LCDBD	2
-#define LCDCCD	1
-#define LCDBL	0
-
-#define LCDDR19 _SFR_MEM8(0x1F)  // Byteaddress för LCDDR19
-
+static unsigned char charCodes[10][4] = {
+	{0x1,0x5,0x5,0x1}, // 0
+	{0x0,0x8,0x0,0x2}, // 1
+	{0x1,0x1,0xE,0x1}, // 2
+	{0x1,0x1,0xB,0x1}, // 3
+	{0x0,0x5,0xB,0x0}, // 4
+	{0x1,0x4,0xB,0x1}, // 5
+	{0x0,0x4,0xF,0x1}, // 6
+	{0x1,0x1,0x9,0x0}, // 7
+	{0x1,0x5,0xF,0x1}, // 8
+	{0x1,0x5,0xB,0x0}, // 9
+};
 
 void LCD_Init(void){
 	//Use 32 kHz crystal oscillator
@@ -66,18 +35,7 @@ void LCD_update(unsigned char data1, unsigned char data2){
 	LCDDR6 = data2;
 }
 
-unsigned char charCodes[10][4] = {
-	{0x1,0x5,0x5,0x1}, // 0
-	{0x0,0x8,0x0,0x2}, // 1
-	{0x1,0x1,0xE,0x1}, // 2
-	{0x1,0x1,0xB,0x1}, // 3
-	{0x0,0x5,0xB,0x0}, // 4
-	{0x1,0x4,0xB,0x1}, // 5
-	{0x0,0x4,0xF,0x1}, // 6
-	{0x1,0x1,0x9,0x0}, // 7
-	{0x1,0x5,0xF,0x1}, // 8
-	{0x1,0x5,0xB,0x0}, // 9
-	};
+
 
 unsigned char offsetPos[6] = {
 	0,0,1,1,2,2,3,3
@@ -108,4 +66,21 @@ void writeChar(char ch, int pos){
 	lcd_base[5]  = charCodes[number][1]<<shift | lcd_base[5] ;
 	lcd_base[10] = charCodes[number][2]<<shift | lcd_base[10];
 	lcd_base[15] = charCodes[number][3]<<shift | lcd_base[15];
+}
+
+void writeLong(long i){
+	if(i == 0){
+		writeChar('0', 6);	
+	}
+	char chars[7];
+	
+	for(int j = 0; j<6; j++){
+		chars[j] = i & 0xFF;
+	}
+	
+	for(int j = 6; j>-1; j--){
+		if(chars[j] != '0'){
+			writeChar(chars[j],j);
+		}
+	}
 }
