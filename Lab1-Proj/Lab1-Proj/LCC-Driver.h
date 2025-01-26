@@ -15,4 +15,6 @@ void LCD_update(unsigned char data1, unsigned char data2);
 
 void writeChar(char ch, int pos);
 
+void writeLong(long i);
+
 #endif /* LCC-Driver_ */

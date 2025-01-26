@@ -72,12 +72,12 @@ void writeChar(char ch, int pos){
 void writeLong(long i){
 	if(i == 0){
 		writeChar('0', 6);	
-		return
+		return;
 	}
 	char chars[7];
 	
-	for(int j = 0; j<6; j++){
-		chars[j] = i%10;
+	for(int j = 5; j>-1; j--){
+		chars[j] = (char)(i%10)+48;
 		i /= 10;
 	}
 	
