@@ -36,45 +36,35 @@ void primes(long j){
 		}
 	}
 }
-
-void blink(){
+void blink2(){
 	TCCR1B |= (1 << CS12);
 	
-	uint16_t half = 32768;
-	
+	int16_t nextBlink= 31250;
+	int16_t acc = 0;
+	int16_t last = 0;
 	while(1){
-		
-		uint16_t current_time = TCNT1;
-		
-		LCDDR0 = 0x0;
-		LCDDR1 = 0x0;
-		LCDDR2 = 0x0;
-		LCDDR3 = 0x0;
-		while(TCNT1 != current_time + half){}
-		
-		uint16_t current_time2 = TCNT1;
-		
-		LCDDR0 = 0x1;
-		LCDDR1 = 0x1;
-		LCDDR2 = 0x1;
-		LCDDR3 = 0x1;
-		
-		while(TCNT1 != current_time2 + half){}
+		int16_t current = TCNT1;
+		acc += last - current;
+		last = current;
+		if (acc >= nextBlink){
+			LCDDR13 ^= 1;
+			acc -= nextBlink;
+		}
 	}
 }
 
 void button(){
 	while(1){
 		LCDDR0 = (LCDDR0 & 0x4) ? 0x00 : 0x4;
-		while(PINB & (0x1<<PINB7));
 		while(!(PINB & (0x1<<PINB7)));
+		while(PINB & (0x1<<PINB7));
 	}
 }
 
 void blink4(){
 	TCCR1B |= (1 << CS12);
 	
-	uint16_t half = 32768;
+	uint16_t half = 31250;
 
 	uint16_t current_time = TCNT1;
 		
@@ -124,7 +114,7 @@ void part4(){
 	bool check = false;
 	while(1){
 		primes4(&j);
-		blink4();
+		blink2();
 		button4(&check);
 	}
 }
@@ -135,12 +125,12 @@ int main(void)
 	LCD_Init();
 	button_init();
 	
-	part4();
+	//part4();
 	
 	//button();
-	//blink();
+	blink2();
 	//primes(100);
-	//writeLong(1000);
+	//writeLong(123456789);
 	//writeLong(10);
 	/*for(char i = '0'; i <= '9'; i++){
 		for(int j = 0; j <= 6; j++){
