@@ -20,9 +20,9 @@ void button_init(void){
 	DDRB = (1<<DDB7);
 }
 
-bool is_prime(long i){
-	for(long j = 2; j<i; j++){
-		if (i % j == 0){
+bool is_prime(long *i){
+	for(long j = 2; j<sqrt(*i); j++){
+		if (*i % j == 0){
 			return false;
 		}
 	}
@@ -79,31 +79,38 @@ void blink4(){
 	uint16_t current_time = TCNT1;
 		
 	//LCDDR0 = 0x0;
-	LCDDR2 &= ~(4 << 0); // Släck segment för "1"
+	LCDDR2 &= ~(4 << 0); // Slï¿½ck segment fï¿½r "1"
 	while(TCNT1 != current_time + half){}
 		
 	uint16_t current_time2 = TCNT1;
 		
 	//LCDDR0 = 0x001;
-	LCDDR2 |= (4 << 0); // Tänd segment för "1"
+	LCDDR2 |= (4 << 0); // Tï¿½nd segment fï¿½r "1"
 		
 	while(TCNT1 != current_time2 + half){}
 }
 
 
-void primes4(long j){
-	if (is_prime(j)){
-		writeLong(j);
+void primes4(long *j){
+	while(1){
+		bool check = is_prime(&j);
+		
+		if(check){
+			writeLong(*j);
+			return;
+		}else{
+			*j += 1;
+		}
 	}
 }
 
 
 
 void button4(int *check){
-	if (PINB & (0x1<<PINB7) && *check)
+	if (PINB & (0x1<<PINB7) && !*check)
 	{
 		
-		LCDDR0 &= ~(4 << 0);;
+		LCDDR0 &= ~(4 << 0);	
 		*check = 0;
 	}
 	else if(!(PINB & (0x1<<PINB7)))
@@ -118,13 +125,12 @@ void button4(int *check){
 
 
 void part4(){
-	long j = 25000;
+	long *j = 100;
 	int check = 1;
 	while(1){
 		primes4(j);
 		blink4();
-		button4(check);
-		j += 1;
+		button4(&check);
 	}
 }
 
