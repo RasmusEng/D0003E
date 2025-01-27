@@ -20,9 +20,9 @@ void button_init(void){
 	DDRB = (1<<DDB7);
 }
 
-bool is_prime(long *i){
-	for(long j = 2; j<sqrt(*i); j++){
-		if (*i % j == 0){
+bool is_prime(long i){
+	for(long j = 2; j<sqrt(i); j++){
+		if (i % j == 0){
 			return false;
 		}
 	}
@@ -93,31 +93,26 @@ void blink4(){
 
 void primes4(long *j){
 	while(1){
-		bool check = is_prime(&j);
+		bool check = is_prime(*j);
 		
 		if(check){
 			writeLong(*j);
+			*j += 2;	
 			return;
 		}else{
-			*j += 1;
+			*j += 2;
 		}
 	}
 }
 
 
 
-void button4(int *check){
-	if (PINB & (0x1<<PINB7) && !*check)
-	{
-		
-		LCDDR0 &= ~(4 << 0);	
-		*check = 0;
-	}
-	else if(!(PINB & (0x1<<PINB7)))
-	{
-		
-		LCDDR0 |= (4 << 0);
-		*check = 1;
+void button4(bool *check){
+	if (PINB & (0x1<<PINB7)){
+		*check = false;
+	}else if(check){
+		LCDDR13 ^=  1;
+		*check = false;
 	}
 }
 
@@ -125,10 +120,10 @@ void button4(int *check){
 
 
 void part4(){
-	long *j = 100;
-	int check = 1;
+	long j = 25001;
+	bool check = false;
 	while(1){
-		primes4(j);
+		primes4(&j);
 		blink4();
 		button4(&check);
 	}
