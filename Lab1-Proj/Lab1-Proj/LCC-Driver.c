@@ -16,6 +16,7 @@ static unsigned char charCodes[10][4] = {
 	{0x1,0x5,0xB,0x0}, // 9
 };
 
+/* Fixa kommentarerna så att det stämmer */
 void LCD_Init(void){
 	//Use 32 kHz crystal oscillator
 	//1/3 Bias and 1/4 duty, SEG0:SEG24 is used as port pins
