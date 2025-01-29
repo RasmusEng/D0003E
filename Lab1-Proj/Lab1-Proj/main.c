@@ -21,7 +21,7 @@ void button_init(void){
 }
 
 bool is_prime(long i){
-	for(long j = 2; j<sqrt(i); j++){
+	for(long j = 2; j<i; j++){
 		if (i % j == 0){
 			return false;
 		}
@@ -36,19 +36,28 @@ void primes(long j){
 		}
 	}
 }
+
 void blink2(){
 	TCCR1B |= (1 << CS12);
 	
-	int16_t nextBlink= 31250;
+	int16_t nextBlink= 15625;
 	int16_t acc = 0;
 	int16_t last = 0;
+	int16_t diff = 0;
 	while(1){
 		int16_t current = TCNT1;
-		acc += last - current;
+		if (current >= last) {
+			diff = current - last;
+			} else {
+			diff = (65535 - last) + current + 1;
+		}
+		acc += diff;
 		last = current;
 		if (acc >= nextBlink){
-			LCDDR13 ^= 1;
+			//LCDDR13 ^= 1;
+			LCDDR18 ^= 1;
 			acc -= nextBlink;
+			return;
 		}
 	}
 }
@@ -125,10 +134,11 @@ int main(void)
 	LCD_Init();
 	button_init();
 	
-	//part4();
+	//primes(25000);
+	part4();
 	
 	//button();
-	blink2();
+	//blink2();
 	//primes(100);
 	//writeLong(123456789);
 	//writeLong(10);
