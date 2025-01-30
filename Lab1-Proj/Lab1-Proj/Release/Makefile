@@ -37,7 +37,7 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../LCC-Driver.c \
+../LCD_Driver.c \
 ../main.c
 
 
@@ -48,19 +48,19 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-LCC-Driver.o \
+LCD_Driver.o \
 main.o
 
 OBJS_AS_ARGS +=  \
-LCC-Driver.o \
+LCD_Driver.o \
 main.o
 
 C_DEPS +=  \
-LCC-Driver.d \
+LCD_Driver.d \
 main.d
 
 C_DEPS_AS_ARGS +=  \
-LCC-Driver.d \
+LCD_Driver.d \
 main.d
 
 OUTPUT_FILE_PATH +=Lab1-Proj.elf
@@ -77,7 +77,7 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
-./LCC-Driver.o: .././LCC-Driver.c
+./LCD_Driver.o: .././LCD_Driver.c
 	@echo Building file: $<
 	@echo Invoking: XC8 C Compiler : 2.36
 	$(QUOTE)C:\Program Files\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega169P  -mdfp="C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega169P__ -DNDEBUG  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

@@ -2,7 +2,7 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
-LCC-Driver.c
+LCD_Driver.c
 
 main.c
 

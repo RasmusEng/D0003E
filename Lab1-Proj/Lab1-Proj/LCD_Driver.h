@@ -1,13 +1,12 @@
 /*
- * LCC-Driver.h
+ * LCC_Driver.h
  *
  * Created: 2025-01-23 10:11:39
- *  Author: joel
+ *  Author: Joel & Rasmus
  */ 
 
-
-#ifndef LCC-Driver_H_
-#define LCC-Driver_H_
+#ifndef LCD_Driver_H_
+#define LCD_Driver_H_ 
 
 void LCD_Init(void);
 
@@ -17,4 +16,4 @@ void writeChar(char ch, int pos);
 
 void writeLong(long i);
 
-#endif /* LCC-Driver_ */
+#endif

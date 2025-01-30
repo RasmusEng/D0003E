@@ -3,21 +3,21 @@ Lab1-Proj.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  000004d2  00000566  2**0
+  0 .data         00000000  00800100  000004d4  00000568  2**0
                   ALLOC, LOAD, DATA
   1 .text         000000b4  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      0000002f  00000000  00000000  00000566  2**0
+  2 .comment      0000002f  00000000  00000000  00000568  2**0
                   CONTENTS, READONLY
-  3 .stack.descriptors.hdr 00000038  00000000  00000000  00000595  2**0
+  3 .stack.descriptors.hdr 00000038  00000000  00000000  00000597  2**0
                   CONTENTS, READONLY
-  4 .debug_info   000007b6  00000000  00000000  000005cd  2**0
+  4 .debug_info   000007b6  00000000  00000000  000005cf  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_abbrev 0000074b  00000000  00000000  00000d83  2**0
+  5 .debug_abbrev 0000074b  00000000  00000000  00000d85  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_line   00000125  00000000  00000000  000014ce  2**0
+  6 .debug_line   00000125  00000000  00000000  000014d0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_str    000002b3  00000000  00000000  000015f3  2**0
+  7 .debug_str    000002b3  00000000  00000000  000015f5  2**0
                   CONTENTS, READONLY, DEBUGGING
   8 .text         00000002  000004a2  000004a2  00000536  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
@@ -29,9 +29,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
  12 .text.writeLong 000000ca  000001ea  000001ea  0000027e  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 13 .data.offsetPos 00000006  00800100  000004a4  00000538  2**0
+ 13 .data.offsetPos 00000008  00800100  000004a4  00000538  2**0
                   CONTENTS, ALLOC, LOAD, DATA
- 14 .rodata.charCodes 00000028  00800106  000004aa  0000053e  2**0
+ 14 .rodata.charCodes 00000028  00800108  000004ac  00000540  2**0
                   CONTENTS, ALLOC, LOAD, DATA
  15 .text.CLK_init 0000000c  00000124  00000124  000001b8  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
@@ -118,7 +118,7 @@ Disassembly of section .text:
 
 0000005c <.dinit>:
   5c:	01 00       	.word	0x0001	; ????
-  5e:	01 2e       	mov	r0, r17
+  5e:	01 30       	cpi	r16, 0x01	; 1
   60:	00 04       	cpc	r0, r0
   62:	a4 00       	.word	0x00a4	; ????
 
@@ -175,7 +175,7 @@ Disassembly of section .text:
 Disassembly of section .text:
 
 000004a2 <__bad_interrupt>:
- 4a2:	ae cd       	rjmp	.-1188   	; 0x0 <__TEXT_REGION_ORIGIN__>
+ 4a2:	ae cd       	rjmp	.-1188   	; 0x0 <__vectors>
 
 Disassembly of section .text.LCD_Init:
 
@@ -257,7 +257,7 @@ Disassembly of section .text.writeChar:
  3cc:	bb 1f       	adc	r27, r27
  3ce:	aa 0f       	add	r26, r26
  3d0:	bb 1f       	adc	r27, r27
- 3d2:	aa 5f       	subi	r26, 0xFA	; 250
+ 3d2:	a8 5f       	subi	r26, 0xF8	; 248
  3d4:	be 4f       	sbci	r27, 0xFE	; 254
  3d6:	8c 91       	ld	r24, X
  3d8:	09 2e       	mov	r0, r25

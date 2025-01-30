@@ -6,8 +6,7 @@
  */ 
 
 #include <xc.h>
-#include "LCC-Driver.h"
-#include <util/delay.h>
+#include "LCD_Driver.h"
 #include <stdbool.h>
 
 void CLK_init(void){
@@ -54,7 +53,6 @@ void blink2(){
 		acc += diff;
 		last = current;
 		if (acc >= nextBlink){
-			//LCDDR13 ^= 1;
 			LCDDR18 ^= 1;
 			acc -= nextBlink;
 			return;
@@ -70,26 +68,6 @@ void button(){
 	}
 }
 
-void blink4(){
-	TCCR1B |= (1 << CS12);
-	
-	uint16_t half = 31250;
-
-	uint16_t current_time = TCNT1;
-		
-	//LCDDR0 = 0x0;
-	LCDDR2 &= ~(4 << 0); // Sl�ck segment f�r "1"
-	while(TCNT1 != current_time + half){}
-		
-	uint16_t current_time2 = TCNT1;
-		
-	//LCDDR0 = 0x001;
-	LCDDR2 |= (4 << 0); // T�nd segment f�r "1"
-		
-	while(TCNT1 != current_time2 + half){}
-}
-
-
 void primes4(long *j){
 	while(1){
 		bool check = is_prime(*j);
@@ -104,8 +82,6 @@ void primes4(long *j){
 	}
 }
 
-
-
 void button4(bool *check){
 	if (PINB & (0x1<<PINB7)){
 		*check = false;
@@ -114,9 +90,6 @@ void button4(bool *check){
 		*check = false;
 	}
 }
-
-
-
 
 void part4(){
 	long j = 25001;
@@ -134,20 +107,13 @@ int main(void)
 	LCD_Init();
 	button_init();
 	
-	//primes(25000);
+	//primes(25000
+	//blink2();
+	//button(););
 	part4();
 	
-	//button();
-	//blink2();
-	//primes(100);
 	//writeLong(123456789);
 	//writeLong(10);
-	/*for(char i = '0'; i <= '9'; i++){
-		for(int j = 0; j <= 6; j++){
-			writeChar(i,j);
-			_delay_ms(1000);
-		}
-	}*/
 	while(1){
 	}
 }
