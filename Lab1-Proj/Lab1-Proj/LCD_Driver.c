@@ -6,7 +6,6 @@
 
 #include "LCD_Driver.h"
 #include <avr/io.h>
-#include <util/delay.h>
 #include <stdbool.h>
 
 static unsigned char charCodes[10][4] = {
