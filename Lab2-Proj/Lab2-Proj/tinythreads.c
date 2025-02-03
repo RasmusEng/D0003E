@@ -28,6 +28,16 @@ thread current = &initp;
 int initialized = 0;
 
 static void initialize(void) {
+	//Initialize the joystick
+	PORTB |= (1 << 7);
+	DDRB = (1<<DDB7); //Kanske inte behövs
+	
+	
+	//Interupt enables
+	EIMSK  |= (0x1 << PCINT15);
+	PCMSK1 |= (0x1 << PCINT15);
+	
+	
 	int i;
 	for (i=0; i<NTHREADS-1; i++)
 	threads[i].next = &threads[i+1];
@@ -63,6 +73,7 @@ static void dispatch(thread next) {
 		longjmp(next->context,1);
 	}
 }
+
 void spawn(void (* function)(int), int arg) {
 	thread newp;
 	DISABLE();
@@ -92,4 +103,10 @@ void lock(mutex *m) {
 }
 void unlock(mutex *m) {
 	
+}	
+
+ISR(PCINT1_vect) {
+	if(!(PINB & (0x1<<PINB7))){
+		yield();
+	}
 }
