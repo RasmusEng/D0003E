@@ -37,7 +37,7 @@ static void initialize(void) {
 	PORTB |= (0x1 << 7);
 	
 	
-	//Interupt enables 
+	//Interrupt enables 
 	EIMSK  |= (0x1 << PCINT15);
 	PCMSK1 |= (0x1 << PCINT15);
 	
@@ -53,8 +53,6 @@ static void initialize(void) {
 	TIMSK1 |= (0x1 << OCIE1A);
 	
 	DISABLE();
-	
-	
 	
 	OCR1A = 391;	// (50*10^-3 * 8 * 10^6)/(1024)
 	TCNT1 = 0;		//Clear Timer register
