@@ -21,6 +21,11 @@ unsigned char offsetPos[8] = {
 	0,0,1,1,2,2,3,3
 };
 
+void CLK_init(void){
+	CLKPR = 0x80;
+	CLKPR = 0x00;
+}
+
 
 void LCD_Init(void){
 	//Use 32 kHz crystal oscillator
@@ -92,6 +97,7 @@ void computePrimes(int pos) {
 
 int main() {
 	LCD_Init();
+	CLK_init();
 	spawn(computePrimes, 0);
 	computePrimes(3);
 }

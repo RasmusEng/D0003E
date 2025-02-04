@@ -28,20 +28,38 @@ thread current = &initp;
 int initialized = 0;
 
 static void initialize(void) {
-	//Initialize the joystick
-	PORTB |= (1 << 7);
-	DDRB = (1<<DDB7); //Kanske inte behövs
-	
-	
-	//Interupt enables
-	EIMSK  |= (0x1 << PCINT15);
-	PCMSK1 |= (0x1 << PCINT15);
-	
-	
 	int i;
 	for (i=0; i<NTHREADS-1; i++)
 	threads[i].next = &threads[i+1];
 	threads[NTHREADS-1].next = NULL;
+	
+	//Initialize the joystick
+	PORTB |= (0x1 << 7);
+	
+	
+	//Interupt enables 
+	EIMSK  |= (0x1 << PCINT15);
+	PCMSK1 |= (0x1 << PCINT15);
+	
+	//Timer things
+	
+	//Compare match
+	TCCR1A |= (0x1 << COM1A1) | (0x1 << COM1A0);
+	
+	//Prescaler
+	TCCR1B |= ((0x1 << WGM13) | (0x1 << WGM12) | (0x1 << CS12) | (0x1 << CS10));
+	
+	//Enabling timer interrupts
+	TIMSK1 |= (0x1 << OCIE1A);
+	
+	DISABLE();
+	
+	
+	
+	OCR1A = 391;	// (50*10^-3 * 8 * 10^6)/(1024)
+	TCNT1 = 0;		//Clear Timer register
+	ENABLE();
+	
 	initialized = 1;
 }
 
@@ -95,8 +113,10 @@ void spawn(void (* function)(int), int arg) {
 	ENABLE();
 }
 void yield(void) {
+	DISABLE();
 	enqueue(current, &readyQ);
 	dispatch(dequeue(&readyQ));
+	ENABLE();
 }
 void lock(mutex *m) {
 	
@@ -105,8 +125,12 @@ void unlock(mutex *m) {
 	
 }	
 
-ISR(PCINT1_vect) {
+ISR(PCINT1_vect){
 	if(!(PINB & (0x1<<PINB7))){
 		yield();
 	}
+}
+
+ISR(TIMER1_COMPA_vect){
+	yield();
 }
