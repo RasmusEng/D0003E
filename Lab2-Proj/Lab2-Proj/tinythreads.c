@@ -52,7 +52,7 @@ static void initialize(void) {
 	//Enabling timer interrupts
 	TIMSK1 |= (0x1 << OCIE1A);
 	
-	DISABLE();
+	DISABLE();		//Disable interrupts as we just enabled them and dont want a interupt to occur whiole seting OCR1A and reseting the timer.
 	
 	OCR1A = 391;	// (50*10^-3 * 8 * 10^6)/(1024)
 	TCNT1 = 0;		//Clear Timer register
@@ -62,6 +62,7 @@ static void initialize(void) {
 }
 
 static void enqueue(thread p, thread *queue) {
+	/*Places a thread in the given queue*/
 	p->next = NULL;
 	if (*queue == NULL) {
 		*queue = p;
@@ -73,6 +74,7 @@ static void enqueue(thread p, thread *queue) {
 	}
 }
 static thread dequeue(thread *queue) {
+	/*Extracts the next thread from a queue*/
 	thread p = *queue;
 	if (*queue) {
 		*queue = (*queue)->next;
@@ -84,6 +86,7 @@ static thread dequeue(thread *queue) {
 }
 
 static void dispatch(thread next) {
+	/*Jumpes to the given thread*/
 	if (setjmp(current->context) == 0) {
 		current = next;
 		longjmp(next->context,1);
@@ -91,6 +94,7 @@ static void dispatch(thread next) {
 }
 
 void spawn(void (* function)(int), int arg) {
+	/*Create new thread*/
 	thread newp;
 	DISABLE();
 	if (!initialized) initialize();
@@ -111,16 +115,18 @@ void spawn(void (* function)(int), int arg) {
 	ENABLE();
 }
 void yield(void) {
+	/*Queue the current process and jump to the next one */
 	DISABLE();
 	enqueue(current, &readyQ);
 	dispatch(dequeue(&readyQ));
 	ENABLE();
 }
 void lock(mutex *m) {
+	/*Locks and queues the currently running thread*/
 	DISABLE();
 	if(m->locked){
 		enqueue(current,&m->waitQ);
-		if(readyQ != NULL){
+		if(readyQ){
 			dispatch(dequeue(&readyQ));
 		}
 	}else{
@@ -129,14 +135,15 @@ void lock(mutex *m) {
 	ENABLE();
 }
 void unlock(mutex *m) {
+	/*Unlocks if queue is empty otherwise work on clearing queue*/
 	DISABLE();
-	if(m->locked){
-		if(m->waitQ != NULL){
-			dispatch(dequeue(&m->waitQ));
-		}else{
-			m->locked = 0;
-		}
+	if(m->waitQ){
+		enqueue(current,&readyQ);
+		dispatch(dequeue(&m->waitQ));
+	}else{
+		m->locked = 0;
 	}
+
 	ENABLE();
 }	
 

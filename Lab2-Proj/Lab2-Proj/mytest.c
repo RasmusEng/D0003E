@@ -40,13 +40,12 @@ void LCD_Init(void){
 	LCDCRA = (1<<LCDEN);
 }
 
-
 void writeChar(char ch, int pos){
 	/* Returns if given input is not possible to print */
 	if(pos < 0 || pos > 5 || ch < 48 || ch > 57){
 		return;
 	}
-	volatile uint8_t*lcd_base = &LCDDR0 + offsetPos[pos];
+	volatile uint8_t *lcd_base = &LCDDR0 + offsetPos[pos];
 	
 	int number = (int)ch - 48;
 	int shift = 0;
@@ -71,6 +70,7 @@ void writeChar(char ch, int pos){
 }
 
 bool is_prime(long i){
+	/*Simple checker for prime number*/
 	for(long j = 2; j<i; j++){
 		if (i % j == 0){
 			return false;
@@ -79,23 +79,19 @@ bool is_prime(long i){
 	return true;
 }
 
+mutex  mutex_PePe =  MUTEX_INIT;
 int pp;
-mutex  mutex_PP =  MUTEX_INIT;
 void printAt(long num, int pos) {
-	lock(&mutex_PP);
+	lock(&mutex_PePe);
 	pp = pos;
-	
 	writeChar( (num % 100) / 10 + '0', pp);
-	
-	
 	pp++;
-	
-	
 	writeChar( num % 10 + '0', pp);
-	unlock(&mutex_PP);
+	unlock(&mutex_PePe);
 }
 
 void computePrimes(int pos) {
+	/*Goes through and calculates prime numbers*/
 	long n;
 	for(n = 1; ; n++) {
 		if (is_prime(n)) {
@@ -105,8 +101,11 @@ void computePrimes(int pos) {
 }
 
 int main() {
+	//Initzilise
 	LCD_Init();
 	CLK_init();
+	
+	//Start thread and normal running of prime calculations
 	spawn(computePrimes, 0);
 	computePrimes(3);
 }
