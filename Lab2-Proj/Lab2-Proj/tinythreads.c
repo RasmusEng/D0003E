@@ -117,10 +117,27 @@ void yield(void) {
 	ENABLE();
 }
 void lock(mutex *m) {
-	
+	DISABLE();
+	if(m->locked){
+		enqueue(current,&m->waitQ);
+		if(readyQ != NULL){
+			dispatch(dequeue(&readyQ));
+		}
+	}else{
+		m->locked = 1;
+	}
+	ENABLE();
 }
 void unlock(mutex *m) {
-	
+	DISABLE();
+	if(m->locked){
+		if(m->waitQ != NULL){
+			dispatch(dequeue(&m->waitQ));
+		}else{
+			m->locked = 0;
+		}
+	}
+	ENABLE();
 }	
 
 ISR(PCINT1_vect){
