@@ -47,7 +47,7 @@ static void initialize(void) {
 	TCCR1A |= (0x1 << COM1A1) | (0x1 << COM1A0);
 	
 	//Prescaler
-	TCCR1B |= ((0x1 << WGM13) | (0x1 << WGM12) | (0x1 << CS12) | (0x1 << CS10));
+	TCCR1B |= (0x1 << WGM12) | (0x1 << CS12) | (0x1 << CS10);
 	
 	//Enabling timer interrupts
 	TIMSK1 |= (0x1 << OCIE1A);
