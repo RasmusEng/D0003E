@@ -33,10 +33,6 @@ static void initialize(void) {
 	threads[i].next = &threads[i+1];
 	threads[NTHREADS-1].next = NULL;
 	
-	//Initialize the joystick
-	PORTB |= (0x1 << 7);
-	
-	
 	//Interrupt enables 
 	EIMSK  |= (0x1 << PCINT15);
 	PCMSK1 |= (0x1 << PCINT15);
@@ -148,11 +144,21 @@ void unlock(mutex *m) {
 }	
 
 ISR(PCINT1_vect){
-	if(!(PINB & (0x1<<PINB7))){
-		yield();
-	}
+    if(!(PINB & (0x1<<PINB7))){
+        yield();
+    }
+}
+
+static int count = 0;
+int getCount(){
+    return count;
+}
+
+void resetCount(){
+    count = 0;
 }
 
 ISR(TIMER1_COMPA_vect){
-	yield();
+    count++;
+    yield();
 }

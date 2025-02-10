@@ -20,4 +20,7 @@ typedef struct mutex_block mutex;
 void lock(mutex *m);
 void unlock(mutex *m);
 
+int getCount();
+void resetCount();
+
 #endif
