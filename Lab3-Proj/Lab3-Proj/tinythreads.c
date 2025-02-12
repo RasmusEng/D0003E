@@ -33,12 +33,7 @@ static void initialize(void) {
 	threads[i].next = &threads[i+1];
 	threads[NTHREADS-1].next = NULL;
 	
-	//Interrupt enables 
-	EIMSK  |= (0x1 << PCINT15);
-	PCMSK1 |= (0x1 << PCINT15);
-	
 	//Timer things
-	
 	//Compare match
 	TCCR1A |= (0x1 << COM1A1) | (0x1 << COM1A0);
 	

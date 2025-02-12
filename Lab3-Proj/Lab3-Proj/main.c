@@ -20,19 +20,23 @@ void CLK_Init(){
 void BUTTON_Init(){
     PORTB |= (1 << 7);
     DDRB = (1<<DDB7);
+
+}
+
+void BUTTON_Int(){
+	//Interrupt enables
+	EIMSK  |= (0x1 << PCINT15);
+	PCMSK1 |= (0x1 << PCINT15);
 }
 
 void init(){
     CLK_Init();
     LCD_Init();
     BUTTON_Init();
-	
-    
+	BUTTON_Int();
 }
 
-//mutex  mutex_PePe =  MUTEX_INIT;
 void printAt(long num, int pos) {
-	//lock(&mutex_PePe);
 	int pp;
 	pp = pos;
 	writeChar( (num % 100) / 10 + '0', pp);
@@ -42,10 +46,7 @@ void printAt(long num, int pos) {
 	}
 	pp++;
 	writeChar( num % 10 + '0', pp);
-	//unlock(&mutex_PePe);
 }
-
-//static volatile long  buttCount = 0;
 
 void button(){
 	long  buttCount = 0;
@@ -87,19 +88,12 @@ void computePrimes(int pos) {
 	}
 }
 
-
-
-
 int main(void)
 {    
     init();
-    /* Replace with your application code */
 	
-    //spawn(computePrimes, 0);
-	//button();
-	spawn(button, 0);
 	computePrimes(0);
+	spawn(blink, 0);
+	spawn(button, 0);
 	
-    //spawn(blink, 0);
-    
 }
