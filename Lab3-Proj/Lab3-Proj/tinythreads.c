@@ -32,23 +32,7 @@ static void initialize(void) {
 	for (i=0; i<NTHREADS-1; i++)
 	threads[i].next = &threads[i+1];
 	threads[NTHREADS-1].next = NULL;
-	
-	//Timer things
-	//Compare match
-	TCCR1A |= (0x1 << COM1A1) | (0x1 << COM1A0);
-	
-	//Prescaler
-	TCCR1B |= (0x1 << WGM12) | (0x1 << CS12) | (0x1 << CS10);
-	
-	//Enabling timer interrupts
-	TIMSK1 |= (0x1 << OCIE1A);
-	
-	DISABLE();		//Disable interrupts as we just enabled them and dont want a interupt to occur whiole seting OCR1A and reseting the timer.
-	
-	OCR1A = 391;	// (50*10^-3 * 8 * 10^6)/(1024)
-	TCNT1 = 0;		//Clear Timer register
-	ENABLE();
-	
+
 	initialized = 1;
 }
 
@@ -151,9 +135,4 @@ int getCount(){
 
 void resetCount(){
     count = 0;
-}
-
-ISR(TIMER1_COMPA_vect){
-    count++;
-    yield();
 }
