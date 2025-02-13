@@ -105,6 +105,7 @@ void spawn(void (* function)(int), int arg) {
 	enqueue(newp, &readyQ);
 	ENABLE();
 }
+
 void yield(void) {
 	/*Queue the current process and jump to the next one */
 	DISABLE();
@@ -154,6 +155,6 @@ void resetCount(){
 }
 
 ISR(TIMER1_COMPA_vect){
-    count++;
     yield();
+    count++;
 }

@@ -1,9 +1,9 @@
 /*
- * Lab3-Proj.c
- *
- * Created: 2025-02-10 14:50:15
- * Author : Joel & Rasmus
- */ 
+* Lab3-Proj.c
+*
+* Created: 2025-02-10 14:50:15
+* Author : Joel & Rasmus
+*/ 
 
 #include "tinythreads.h"
 #include "LCD_Driver.h"
@@ -13,13 +13,13 @@
 
 
 void CLK_Init(){
-    CLKPR = 0x80;
-    CLKPR = 0x00;
+	CLKPR = 0x80;
+	CLKPR = 0x00;
 }
 
 void BUTTON_Init(){
-    PORTB |= (1 << 7);
-    DDRB = (1<<DDB7);
+	PORTB |= (1 << 7);
+	DDRB = (1<<DDB7);
 
 }
 
@@ -30,9 +30,9 @@ void BUTTON_Int(){
 }
 
 void init(){
-    CLK_Init();
-    LCD_Init();
-    BUTTON_Init();
+	CLK_Init();
+	LCD_Init();
+	BUTTON_Init();
 	BUTTON_Int();
 }
 
@@ -59,23 +59,23 @@ void button(){
 }
 
 void blink(){
-    TCCR1B |= (1 << CS12);
-    
-    while(1){
-        while (getCount() < 10){
-        }
-        LCDDR18 ^= 1;
-        resetCount();
-    }
+	TCCR1B |= (1 << CS12);
+	
+	while(1){
+		while (getCount() < 10){
+		}
+		LCDDR18 ^= 1;
+		resetCount();
+	}
 }
 
 bool is_prime(long i){
-    for(long j = 2; j<i; j++){
-        if (i % j == 0){
-            return false;
-        }
-    }
-    return true;
+	for(long j = 2; j<i; j++){
+		if (i % j == 0){
+			return false;
+		}
+	}
+	return true;
 }
 
 void computePrimes(int pos) {
@@ -90,10 +90,9 @@ void computePrimes(int pos) {
 
 int main(void)
 {    
-    init();
+	init();
 	
-	computePrimes(0);
+	spawn(computePrimes, 0);
 	spawn(blink, 0);
-	spawn(button, 0);
-	
+	button();
 }
