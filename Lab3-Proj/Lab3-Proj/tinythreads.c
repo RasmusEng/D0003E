@@ -9,7 +9,9 @@
 #define STACKSIZE       80
 #define NTHREADS        4
 #define SETSTACK(buf,a) *((unsigned int *)(buf)+8) = (unsigned int)(a) + STACKSIZE - 4; \
-						*((unsigned int *)(buf)+9) = (unsigned int)(a) + STACKSIZE - 4
+*((unsigned int *)(buf)+9) = (unsigned int)(a) + STACKSIZE - 4
+
+static int count = 0;
 
 struct thread_block {
 	void (*function)(int); // code to run
@@ -33,12 +35,11 @@ static void initialize(void) {
 	threads[i].next = &threads[i+1];
 	threads[NTHREADS-1].next = NULL;
 	
-	//Interrupt enables 
-	EIMSK  |= (0x1 << PCINT15);
-	PCMSK1 |= (0x1 << PCINT15);
-	
+	initialized = 1;
+}
+
+void timerInit(void){
 	//Timer things
-	
 	//Compare match
 	TCCR1A |= (0x1 << COM1A1) | (0x1 << COM1A0);
 	
@@ -48,27 +49,19 @@ static void initialize(void) {
 	//Enabling timer interrupts
 	TIMSK1 |= (0x1 << OCIE1A);
 	
-	DISABLE();		//Disable interrupts as we just enabled them and dont want a interupt to occur whiole seting OCR1A and reseting the timer.
+	DISABLE();		//Disable interrupts as we just enabled them and dont want a interupt to occur while setting OCR1A and reseting the timer.
 	
-	OCR1A = 391;	// (50*10^-3 * 8 * 10^6)/(1024)
+	OCR1A = 3906;	// (50*10^-2 * 8 * 10^6)/(1024)
 	TCNT1 = 0;		//Clear Timer register
 	ENABLE();
-	
-	initialized = 1;
 }
 
+
 static void enqueue(thread p, thread *queue) {
-	/*Places a thread in the given queue*/
-	p->next = NULL;
-	if (*queue == NULL) {
-		*queue = p;
-		} else {
-		thread q = *queue;
-		while (q->next)
-		q = q->next;
-		q->next = p;
-	}
+	p->next = *queue;
+	*queue = p;
 }
+
 static thread dequeue(thread *queue) {
 	/*Extracts the next thread from a queue*/
 	thread p = *queue;
@@ -90,7 +83,7 @@ static void dispatch(thread next) {
 }
 
 void spawn(void (* function)(int), int arg) {
-	/*Create new thread*/
+	/* Creates new thread ?????? */
 	thread newp;
 	DISABLE();
 	if (!initialized) initialize();
@@ -98,6 +91,7 @@ void spawn(void (* function)(int), int arg) {
 	newp->function = function;
 	newp->arg = arg;
 	newp->next = NULL;
+
 	if (setjmp(newp->context) == 1) {
 		ENABLE();
 		current->function(current->arg);
@@ -108,57 +102,17 @@ void spawn(void (* function)(int), int arg) {
 
 	SETSTACK(&newp->context, &newp->stack);
 	enqueue(newp, &readyQ);
+	yield();
+	/* Runs the new thread ??*/
+	
 	ENABLE();
 }
+
 void yield(void) {
 	/*Queue the current process and jump to the next one */
 	DISABLE();
+	thread t = dequeue(&readyQ);
 	enqueue(current, &readyQ);
-	dispatch(dequeue(&readyQ));
+	dispatch(t);
 	ENABLE();
-}
-void lock(mutex *m) {
-	/*Locks and queues the currently running thread*/
-	DISABLE();
-	if(m->locked){
-		enqueue(current,&m->waitQ);
-		if(readyQ){
-			dispatch(dequeue(&readyQ));
-		}
-	}else{
-		m->locked = 1;
-	}
-	ENABLE();
-}
-void unlock(mutex *m) {
-	/*Unlocks if queue is empty otherwise work on clearing queue*/
-	DISABLE();
-	if(m->waitQ){
-		enqueue(current,&readyQ);
-		dispatch(dequeue(&m->waitQ));
-	}else{
-		m->locked = 0;
-	}
-
-	ENABLE();
-}	
-
-ISR(PCINT1_vect){
-    if(!(PINB & (0x1<<PINB7))){
-        yield();
-    }
-}
-
-static int count = 0;
-int getCount(){
-    return count;
-}
-
-void resetCount(){
-    count = 0;
-}
-
-ISR(TIMER1_COMPA_vect){
-    count++;
-    yield();
 }
