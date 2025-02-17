@@ -1,103 +1,153 @@
-/*
-* LCD_Driver.c
-*
-*  Author: Joel & Rasmus
-*/
-
-#include "LCD_Driver.h"
+#include <setjmp.h>
 #include <avr/io.h>
-#include <stdbool.h>
+#include <avr/interrupt.h>
+#include "tinythreads.h"
 
-static unsigned char charCodes[10][4] = {
-	{0x1,0x5,0x5,0x1}, // 0
-	{0x0,0x8,0x0,0x2}, // 1
-	{0x1,0x1,0xE,0x1}, // 2
-	{0x1,0x1,0xB,0x1}, // 3
-	{0x0,0x5,0xB,0x0}, // 4
-	{0x1,0x4,0xB,0x1}, // 5
-	{0x0,0x4,0xF,0x1}, // 6
-	{0x1,0x1,0x9,0x0}, // 7
-	{0x1,0x5,0xF,0x1}, // 8
-	{0x1,0x5,0xB,0x0}, // 9
+#define NULL            0
+#define DISABLE()       cli()
+#define ENABLE()        sei()
+#define STACKSIZE       80
+#define NTHREADS        4
+#define SETSTACK(buf,a) *((unsigned int *)(buf)+8) = (unsigned int)(a) + STACKSIZE - 4; \
+						*((unsigned int *)(buf)+9) = (unsigned int)(a) + STACKSIZE - 4
+
+static int count = 0;
+
+struct thread_block {
+	void (*function)(int); // code to run
+	int arg; // argument to the above
+	thread next; // for use in linked lists
+	jmp_buf context; // machine state
+
+	char stack[STACKSIZE]; // execution stack space
 };
 
-void LCD_Init(void){
-	//Use 32 kHz crystal oscillator
-	//1/3 Bias and 1/4 duty, SEG0:SEG24 is used as port pins
-	LCDCRB = (1<<LCDCS) | (1<<LCDMUX0)| (1<<LCDMUX1)|(1<<LCDPM0) |(1<<LCDPM1) |(1<<LCDPM2);
-	/* Using 16 as prescaler selection and 8 as LCD Clock Divide */
-	/* gives a frame rate of 32 Hz */
-	LCDFRR = (1<<LCDCD0) | (1<<LCDCD1) | (1<<LCDCD2);
-	/* Set segment drive time to 300 μs and output voltage to 3.35 V*/
-	LCDCCR = (1<<LCDDC0) | (1<<LCDCC1) | (1<<LCDCC2) | (1<<LCDCC3);
-	/* Enable LCD, low power waveform and no interrupt enabled */
-	LCDCRA = (1<<LCDEN);
+struct thread_block threads[NTHREADS];
+struct thread_block initp;
+thread freeQ = threads;
+thread readyQ = NULL;
+thread current = &initp;
+int initialized = 0;
+
+static void initialize(void) {
+	int i;
+	for (i=0; i<NTHREADS-1; i++)
+	threads[i].next = &threads[i+1];
+	threads[NTHREADS-1].next = NULL;
+	
+	//Timer things
+	//Compare match
+	TCCR1A |= (0x1 << COM1A1) | (0x1 << COM1A0);
+	
+	//Prescaler
+	TCCR1B |= (0x1 << WGM12) | (0x1 << CS12) | (0x1 << CS10);
+	
+	//Enabling timer interrupts
+	TIMSK1 |= (0x1 << OCIE1A);
+	
+	DISABLE();		//Disable interrupts as we just enabled them and dont want a interupt to occur while setting OCR1A and reseting the timer.
+	
+	OCR1A = 3906;	// (50*10^-2 * 8 * 10^6)/(1024)
+	TCNT1 = 0;		//Clear Timer register
+	ENABLE();
+	
+	initialized = 1;
 }
 
-void LCD_update(unsigned char data1, unsigned char data2){
-	/* LCD Blanking and Low power waveform are unchanged. */
-	/* Update Display memory. */
-	LCDDR0 = data1;
-	LCDDR6 = data2;
+static void enqueue(thread p, thread *queue) {
+    p->next = *queue;
+    *queue = p;
 }
 
-unsigned char offsetPos[8] = {
-	/*THis list is used to offset positions of characters for the display */
-	0,0,1,1,2,2,3,3
-};
-
-
-void writeChar(char ch, int pos){
-	/* Returns if given input is not possible to print */
-	if(pos < 0 || pos > 5 || ch < 48 || ch > 57){
-		return;
+static thread dequeue(thread *queue) {
+	/*Extracts the next thread from a queue*/
+	thread p = *queue;
+	if (*queue) {
+		*queue = (*queue)->next;
+		} else {
+		// Empty queue, kernel panic!!!
+		while (1) ; // not much else to do...
 	}
-	volatile uint8_t *lcd_base = &LCDDR0 + offsetPos[pos];
-	
-	int number = (int)ch - 48;
-	int shift = 0;
-	/*Clears the part of the display we want to write onto */
-	if (pos % 2 == 1){
-		shift = 4;
-		lcd_base[0]  = lcd_base[0]  & 0x0F;
-		lcd_base[5]  = lcd_base[5]  & 0x0F;
-		lcd_base[10] = lcd_base[10] & 0x0F;
-		lcd_base[15] = lcd_base[15] & 0x0F;
-		}else{
-		lcd_base[0]  = lcd_base[0]  & 0xF0;
-		lcd_base[5]  = lcd_base[5]  & 0xF0;
-		lcd_base[10] = lcd_base[10] & 0xF0;
-		lcd_base[15] = lcd_base[15] & 0xF0;
-	}
-	/*Writes to the display*/
-	lcd_base[0]  = charCodes[number][0]<<shift | lcd_base[0] ;
-	lcd_base[5]  = charCodes[number][1]<<shift | lcd_base[5] ;
-	lcd_base[10] = charCodes[number][2]<<shift | lcd_base[10];
-	lcd_base[15] = charCodes[number][3]<<shift | lcd_base[15];
+	return p;
 }
 
-void writeLong(long i){
-	/* Writes the 6 least significant numbers of a long */
-	if(i == 0){
-		writeChar('0', 6);
-		return;
+static void dispatch(thread next) {
+	/*Jumpes to the given thread*/
+	if (setjmp(current->context) == 0) {
+		current = next;
+		longjmp(next->context,1);
 	}
-	char chars[7];
-	
-	for(int j = 5; j>-1; j--){
-		chars[j] = (char)(i%10)+48;
-		i /= 10;
-	}
-	
-	bool importantNum = false;
-	for(int j = 6; j>-1; j--){
-		if(!importantNum){
-			if(chars[j] == 0){
-				continue;
-				}else{
-				importantNum = true;
-			}
+}
+
+void spawn(void (* function)(int), int arg) {
+    /* Creates new thread 👉🥺👈 */
+    thread newp;
+    DISABLE();
+    if (!initialized) initialize();
+    newp = dequeue(&freeQ);
+    newp->function = function;
+    newp->arg = arg;
+    newp->next = NULL;
+
+    if (setjmp(newp->context) == 1) {
+        ENABLE();
+        current->function(current->arg);
+        DISABLE();
+        enqueue(current, &freeQ);
+        dispatch(dequeue(&readyQ));
+    }
+
+    SETSTACK(&newp->context, &newp->stack);
+    enqueue(newp, &readyQ);
+	yield();
+    /* Runs the new thread 🥵*/
+    
+    ENABLE();
+}
+
+void yield(void) {
+	/*Queue the current process and jump to the next one */
+	DISABLE();
+	thread t = dequeue(&readyQ);
+    enqueue(current, &readyQ);
+    dispatch(t);
+	ENABLE();
+}
+void lock(mutex *m) {
+	/*Locks and queues the currently running thread*/
+	DISABLE();
+	if(m->locked){
+		enqueue(current,&m->waitQ);
+		if(readyQ){
+			dispatch(dequeue(&readyQ));
 		}
-		writeChar(chars[j],j);
+	}else{
+		m->locked = 1;
 	}
+	ENABLE();
+}
+
+void unlock(mutex *m) {
+	/*Unlocks if queue is empty otherwise work on clearing queue*/
+	DISABLE();
+	if(m->waitQ){
+		enqueue(current,&readyQ);
+		dispatch(dequeue(&m->waitQ));
+	}else{
+		m->locked = 0;
+	}
+
+	ENABLE();
+}	
+
+void addCount(){
+	count++;
+}
+
+int getCount(){
+    return count;
+}
+
+void resetCount(){
+    count = 0;
 }

@@ -44,18 +44,22 @@ void printAt(long num, int pos) {
 	pp = pos;
 	writeChar( (num % 100) / 10 + '0', pp);
 	int j = 0;
-	for(int i = 0; i < 1000; i++){
+	/*for(int i = 0; i < 1000; i++){
 		j++;
-	}
+	}*/
 	pp++;
 	writeChar( num % 10 + '0', pp);
 }
 
 void button(){
-	long  buttCount = 0;
-	while(1){
-		printAt(buttCount, 3);
-		buttCount = buttCount + 1;
+	uint16_t presses = 0;
+	printAt(presses, 3);
+
+	while(true) {
+		lock(&buttonMut);
+		if (!(PINB & (1<<PINB7))) {
+			printAt(++presses, 3);
+		}
 	}
 }
 
@@ -63,8 +67,8 @@ void blink(){
 	TCCR1B |= (1 << CS12);
 
 	while(1){
-		while (getCount() < 3){
-		}
+		lock(&blinkMut);
+		while (getCount() < 3);
 		LCDDR18 ^= 1;
 		resetCount();
 	}
@@ -82,34 +86,29 @@ bool is_prime(long i){
 void computePrimes(int pos) {
 	/*Goes through and calculates prime numbers*/
 	long n;
-	for(n = 1; ; n++) {
+	for(n = 0; ; n++) {
 		if (is_prime(n)) {
 			printAt(n, pos);
 		}
 	}
+	
 }
 
 ISR(PCINT1_vect){
 	unlock(&buttonMut);
-    if(!(PINB & (0x1<<PINB7))){
-        yield();
-    }
-	lock(&buttonMut);
 }
 
 ISR(TIMER1_COMPA_vect){
-	unlock(&blinkMut);
 	addCount();
-    yield();
-	lock(&blinkMut);
+	unlock(&blinkMut);
+	yield();
 }	
 
 int main(void)
 {    
 	init();
-	
-	spawn(blink, 0);
 	spawn(button, 0);
+	spawn(blink, 0);
 	computePrimes(0);
 	
 }
