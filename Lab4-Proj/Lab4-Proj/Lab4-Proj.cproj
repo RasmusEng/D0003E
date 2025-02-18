@@ -108,7 +108,19 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="LCD_Driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="LCD_Driver.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="TinyTimber.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="TinyTimber.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
