@@ -53,11 +53,7 @@ void button(){
 }
 
 void blink(){
-
-	//		while (getCount() < 3);
-	LCDDR18 ^= 1;
-	//	resetCount();
-	
+	LCDDR18 ^= 1;	
 }
 
 bool is_prime(long i){
@@ -92,5 +88,4 @@ int main(void)
 {    
 	init();
 	computePrimes(0);
-	
 }
