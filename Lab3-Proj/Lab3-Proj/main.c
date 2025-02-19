@@ -65,12 +65,9 @@ void button(){
 
 void blink(){
 	TCCR1B |= (1 << CS12);
-
 	while(1){
 		lock(&blinkMut);
-		while (getCount() < 3);
 		LCDDR18 ^= 1;
-		resetCount();
 	}
 }
 
@@ -91,7 +88,6 @@ void computePrimes(int pos) {
 			printAt(n, pos);
 		}
 	}
-	
 }
 
 ISR(PCINT1_vect){
@@ -99,9 +95,7 @@ ISR(PCINT1_vect){
 }
 
 ISR(TIMER1_COMPA_vect){
-	addCount();
 	unlock(&blinkMut);
-	yield();
 }	
 
 int main(void)
