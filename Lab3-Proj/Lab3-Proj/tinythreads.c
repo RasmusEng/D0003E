@@ -153,8 +153,10 @@ int getCount(){
 void resetCount(){
     count = 0;
 }
-
+mutex countLock = MUTEX_INIT;
 ISR(TIMER1_COMPA_vect){
     yield();
+	lock(&countLock);
     count++;
+	unlock(&countLock);
 }

@@ -36,16 +36,15 @@ void init(){
 	BUTTON_Int();
 }
 
+mutex printLock = MUTEX_INIT;
 void printAt(long num, int pos) {
 	int pp;
 	pp = pos;
+	lock(&printLock);
 	writeChar( (num % 100) / 10 + '0', pp);
-	int j = 0;
-	for(int i = 0; i < 1000; i++){
-		j++;
-	}
 	pp++;
 	writeChar( num % 10 + '0', pp);
+	unlock(&printLock);
 }
 
 void button(){
