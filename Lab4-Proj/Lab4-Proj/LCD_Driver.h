@@ -16,4 +16,6 @@ void writeChar(char ch, int pos);
 
 void writeLong(long i);
 
+void printAt(uint16_t num, int pos);
+
 #endif

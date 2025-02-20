@@ -101,3 +101,11 @@ void writeLong(long i){
 		writeChar(chars[j],j);
 	}
 }
+
+void printAt(uint16_t num, int pos) {
+	int pp;
+	pp = pos;
+	writeChar( (num % 100) / 10 + '0', pp);
+	pp++;
+	writeChar( num % 10 + '0', pp);
+}
