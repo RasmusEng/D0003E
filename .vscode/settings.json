@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "pulsegenerator.h": "c",
+        "tinytimber.h": "c",
+        "pulsecontroller.h": "c",
+        "INIT.C": "cpp"
+    }
+}

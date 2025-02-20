@@ -4,21 +4,16 @@
 * Created: 2025-02-10 14:50:15
 * Author : Joel & Rasmus
 */ 
-#include "LCD_Driver.h"
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include "N.h"
+#include "PulseGenerator.h"
 #include "TinyTimber.h"
+#include "INIT.h"
 
-N pulse1 = initN(1);
-N pulse2 = initN(3);
+//mby move to main?
+PulseGenerator pulseLeft = initPulseGenerator(1);
+PulseGenerator pulseRight = initPulseGenerator(3);
+GUI gui = initGUI(pulseLeft, pulseRight);
 
 void CLK_Init(){
-	CLKPR = 0x80;
-	CLKPR = 0x00;
-
 	// Timer
 	DDRB = (1<<DDB7);
 }
@@ -33,17 +28,11 @@ void BUTTON_Int(){
 	PCMSK1 |= (0x1 << PCINT15);
 }
 
-void init(){
-	CLK_Init();
-	LCD_Init();
-	BUTTON_Init();
-	BUTTON_Int();
-}
-
 int main(void)
 {    
 	init();
-	INSTALL();
+	INSTALL(&gui, joyStickVerticalControll, IRQ_PCINT1);
+	INSTALL(&gui, joyStickHorizontalControll, IRQ_PCINT0);
 	return TINYTIMBER();
 
 }
