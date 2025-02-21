@@ -1,6 +1,6 @@
 #ifndef INIT_H
 #define INIT_H
 
-#define void INIT();
+void INIT();
 
 #endif

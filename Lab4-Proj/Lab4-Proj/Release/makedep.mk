@@ -10,7 +10,7 @@ LCD_Driver.c
 
 main.c
 
-pulseController.c
+PulseController.c
 
 PulseGenerator.c
 

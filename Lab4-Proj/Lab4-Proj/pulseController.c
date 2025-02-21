@@ -1,4 +1,5 @@
 #include "PulseController.h"
+#include <avr/io.h>
 
 //Make sure to handel race conditions in this thingi ಥ_ಥ
 void sendSignal(int pin){

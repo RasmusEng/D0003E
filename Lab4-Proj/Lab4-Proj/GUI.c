@@ -6,16 +6,16 @@
 //Fix sync and async calls
 //MAKE SURE TO INIT PINE and PINB!!!!!!
 //Might need to be switched PE2 and PE3
-void joyStickVerticalControll(){
+void joyStickVerticalControll(GUI *self){
     if (!(PINE & (1 << PE2))) { //LEFT
-        moveLeft();
+        moveLeft(self);
     }
     if (!(PINE & (1 << PE3))) { //RIGHT
-        moveRight();
+        moveRight(self);
     }
 }
 
-void joyStickHorizontalControll(){
+void joyStickHorizontalControll(GUI *self){
     if (!(PINB & (1 << PB7))) { //DOWN
         freqDown();
     }
@@ -54,9 +54,9 @@ void  moveRight(GUI *self){
 }
 
 void press(GUI *self){
-    if(left){
-        self->left->reset();
+    if(self->isLeft){
+        reset(self->left);
     }else{
-        self->right->reset();
+		reset(self->right);
     }
 }

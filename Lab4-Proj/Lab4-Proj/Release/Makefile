@@ -41,7 +41,7 @@ C_SRCS +=  \
 ../INIT.c \
 ../LCD_Driver.c \
 ../main.c \
-../pulseController.c \
+../PulseController.c \
 ../PulseGenerator.c \
 ../TinyTimber.c
 
@@ -57,7 +57,7 @@ GUI.o \
 INIT.o \
 LCD_Driver.o \
 main.o \
-pulseController.o \
+PulseController.o \
 PulseGenerator.o \
 TinyTimber.o
 
@@ -66,7 +66,7 @@ GUI.o \
 INIT.o \
 LCD_Driver.o \
 main.o \
-pulseController.o \
+PulseController.o \
 PulseGenerator.o \
 TinyTimber.o
 
@@ -75,7 +75,7 @@ GUI.d \
 INIT.d \
 LCD_Driver.d \
 main.d \
-pulseController.d \
+PulseController.d \
 PulseGenerator.d \
 TinyTimber.d
 
@@ -84,7 +84,7 @@ GUI.d \
 INIT.d \
 LCD_Driver.d \
 main.d \
-pulseController.d \
+PulseController.d \
 PulseGenerator.d \
 TinyTimber.d
 
@@ -130,7 +130,7 @@ LINKER_SCRIPT_DEP+=
 	@echo Finished building: $<
 	
 
-./pulseController.o: .././pulseController.c
+./PulseController.o: .././PulseController.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DNDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -Os -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -mmcu=atmega169p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega169p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

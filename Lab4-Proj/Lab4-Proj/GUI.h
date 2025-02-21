@@ -3,6 +3,7 @@
 
 #include "TinyTimber.h"
 #include <stdbool.h>
+#include "PulseGenerator.h"
 
 typedef struct
 {
@@ -16,5 +17,4 @@ typedef struct
 	
 void joyStickHorizontalControll();
 void joyStickVerticalControll();
-
 #endif
