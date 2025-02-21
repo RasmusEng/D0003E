@@ -7,14 +7,12 @@
 #ifndef LCD_Driver_H_
 #define LCD_Driver_H_ 
 #include <stdint.h>
-
+//TODO finx so that printAt ans switchIndicator can be called with SYNC and ASYNC
 void LCD_Init(void);
 
-void LCD_update(unsigned char data1, unsigned char data2);
+LCD_update(unsigned char data1, unsigned char data2);
 
-void writeChar(char ch, int pos);
-
-void writeLong(long i);
+writeChar(char ch, int pos);
 
 void printAt(uint16_t num, int pos);
 

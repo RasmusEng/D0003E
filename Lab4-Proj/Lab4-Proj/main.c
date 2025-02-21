@@ -12,8 +12,9 @@
 
 int main(void)
 {    
-	PulseGenerator *pulseLeft = initPulseGenerator(50, 1, 1, 1);
-	PulseGenerator *pulseRight = initPulseGenerator(50, 3, 4, 1);
+	PulseController *pulseController = initPulseGenerator();
+	PulseGenerator *pulseLeft = initPulseGenerator(50, 1, 1, pulseController);
+	PulseGenerator *pulseRight = initPulseGenerator(50, 3, 4, pulseController);
 	GUI gui = initGUI(pulseLeft, pulseRight);
 	INIT();
 	INSTALL(&gui, joyStickVerticalControll, IRQ_PCINT1);

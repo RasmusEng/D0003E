@@ -10,7 +10,7 @@ typedef struct
 } PulseController;
 
 #define initpulseController() {initObject()};
-void sendSignal(int pin);
+void sendSignal(PulseController *self, int);
 
 
 #endif

@@ -2,17 +2,11 @@
 #include <avr/io.h>
 #include <stdbool.h>
 
-void INIT(){
-    CLKPR = 0x80;
+void CPUCLK_Init(void){
+	CLKPR = 0x80;
 	CLKPR = 0x00;
-
-    LCD_Init();
-    CLK_Init();
-    BUTTON_Init();
-    
 }
 
-//Add Init för arrows to indicate which halve we are controlling 
 void LCD_Init(void){
 	//Use 32 kHz crystal oscillator
 	//1/3 Bias and 1/4 duty, SEG0:SEG24 is used as port pins
@@ -43,3 +37,9 @@ void BUTTON_Init(){
 	PCMSK1 |= (0x1 << PCINT15);
 }
 
+void INIT(){
+	CPUCLK_Init();
+	LCD_Init();
+	CLK_Init();
+	BUTTON_Init();
+}

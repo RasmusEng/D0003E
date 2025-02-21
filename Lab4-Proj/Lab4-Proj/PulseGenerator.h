@@ -7,18 +7,19 @@
 typedef struct
 {
     Object super;
-    uint16_t currentFreq;
-    uint16_t lastFreq;
+    int currentFreq;
+    int lastFreq;
     int pos;
     int pin;
-    PulseController outPut;
+    PulseController *outPut;
 } PulseGenerator;
 
 // Oklart om vi sätter lastfreq till currentFreq här
 #define initPulseGenerator(currentFreq, pos, pin, outPut) {initObject(), currentFreq, currentFreq, pos, pin, outPut}
 
-uint16_t increase(PulseGenerator *self);
-uint16_t decrease(PulseGenerator *self);
-uint16_t reset(PulseGenerator *self);
+int increase(PulseGenerator *self, int);
+int decrease(PulseGenerator *self, int);
+int reset(PulseGenerator *self, int);
+int generator(PulseGenerator *self, int); //MBY not int return ＼(ﾟｰﾟ＼)
 
 #endif
