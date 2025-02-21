@@ -1,4 +1,7 @@
 #include "LCD_Driver.h"
+#include <avr/io.h>
+#include <stdbool.h>
+
 void INIT(){
     CLKPR = 0x80;
 	CLKPR = 0x00;

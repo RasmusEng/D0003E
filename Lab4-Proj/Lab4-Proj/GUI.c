@@ -1,5 +1,6 @@
 #include "GUI.h"
 #include "LCD_Driver.h"
+#include <avr/io.h>
 
 //FIX RAPID INCREASE (HOLDING UP/DOWN SHOULD GO FAST AS FUCK )
 //Fix sync and async calls
@@ -27,19 +28,19 @@ void joyStickHorizontalControll(){
 }
 
 void freqUp(GUI *self){
-    if(left){
-        self->left->increase();
-    }else{
-        self->right->increase();
-    }
-}   
+	if(self->isLeft){
+		increase(&(self->left));
+		}else{
+		increase(&(self->right));
+	}
+}
 
 void freqDown(GUI *self){
-    if(left){
-        self->left->decrease();
-    }else{
-        self->right->decrease();
-    }
+	if(self->isLeft){
+		decrease(&(self->right));
+		}else{
+		decrease(&(self->right));
+	}
 }
 
 void moveLeft(GUI *self){

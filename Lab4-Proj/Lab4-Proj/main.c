@@ -7,16 +7,16 @@
 #include "PulseGenerator.h"
 #include "TinyTimber.h"
 #include "INIT.h"
+#include "GUI.h"
 
-//mby move to main?
-PulseGenerator pulseLeft = initPulseGenerator(1);
-PulseGenerator pulseRight = initPulseGenerator(3);
-GUI gui = initGUI(pulseLeft, pulseRight);
 
 int main(void)
 {    
 	INIT();
+	PulseGenerator pulseLeft = initPulseGenerator(50, 1, 1, 1);
+	PulseGenerator pulseRight = initPulseGenerator(50, 3, 4, 1);
+	GUI *gui = initGUI(pulseLeft, pulseRight);
 	INSTALL(&gui, joyStickVerticalControll, IRQ_PCINT1);
 	INSTALL(&gui, joyStickHorizontalControll, IRQ_PCINT0);
-	return TINYTIMBER();'
+	return TINYTIMBER();
 }

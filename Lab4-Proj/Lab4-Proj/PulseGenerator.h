@@ -12,7 +12,7 @@ typedef struct
     int pos;
     int pin;
     PulseController outPut;
-} pulseGenerator;
+} PulseGenerator;
 
 // Oklart om vi sätter lastfreq till currentFreq här
 #define initPulseGenerator(currentFreq, pos, pin, outPut) {initObject(), currentFreq, currentFreq, pos, pin, outPut}

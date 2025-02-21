@@ -4,15 +4,17 @@
 #include "TinyTimber.h"
 #include <stdbool.h>
 
-typedeff struct
+typedef struct
 {
     Object super;
-    bool left;
-    PulseGenerator left;
-    PulseGenerator right;
+    bool isLeft;
+    PulseGenerator *left;
+    PulseGenerator *right;
 } GUI;
 
-#define initGUI(left, right) {initObject(), false, left, right};
-
+#define initGUI(left1, right2) {initObject(), false, left1, right2};
+	
+void joyStickHorizontalControll();
+void joyStickVerticalControll();
 
 #endif
