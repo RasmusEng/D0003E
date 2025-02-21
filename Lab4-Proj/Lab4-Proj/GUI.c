@@ -1,4 +1,5 @@
 #include "GUI.h"
+#include "LCD_Driver.h"
 
 //FIX RAPID INCREASE (HOLDING UP/DOWN SHOULD GO FAST AS FUCK )
 //Fix sync and async calls
@@ -43,10 +44,12 @@ void freqDown(GUI *self){
 
 void moveLeft(GUI *self){
     self->left = true;
+    switchIndicator(); //Sync or Async?
 }
 
 void  moveRight(GUI *self){
     self->left = false;
+    switchIndicator(); //Sync or Async?
 }
 
 void press(GUI *self){

@@ -63,6 +63,7 @@ void blink2(){
 void button(){
 	while(1){
 		LCDDR0 = (LCDDR0 & 0x4) ? 0x00 : 0x4;
+		PORTE ^= (0x1 << PE4);
 		while(!(PINB & (0x1<<PINB7)));
 		while(PINB & (0x1<<PINB7));
 	}
@@ -94,10 +95,34 @@ void button4(bool *check){
 void part4(){
 	long j = 25001;
 	bool check = false;
+	DDRE |= (1 << DDE4) | (1 << DDE6);
 	while(1){
-		primes4(&j);
-		blink2();
-		button4(&check);
+		//PORTE ^= (0x1 << PE4);
+		PORTE = (1 << PE4) | (1 << PE6);
+		for(int i = 0; i<1000000; i++){
+			
+		}
+		PORTE = ((0 << PE4) | (0 << PE6));
+	}
+}
+
+void test(){
+	//DDRE |= (1 << DDE4) | (1 << DDE6);
+
+	while(1) {
+		// Set PE4 and PE6 HIGH
+		//PORTE |= (1 << PE4) | (1 << PE6);
+		PORTE ^= (1 << PE4);
+
+		// Delay loop
+		for (volatile long i = 0; i < 10000; i++) { }
+
+		// Set PE4 and PE6 LOW properly
+		//PORTE &= ~((1 << PE4) | (1 << PE6));
+		PORTE ^= (1 << PE6);
+		// Delay loop
+		for (volatile long i = 0; i < 10000; i++) { }
+
 	}
 }
 
@@ -110,8 +135,8 @@ int main(void)
 	//primes(25000
 	//blink2();
 	//button(););
-	part4();
-	
+	//part4();
+	test();
 	//writeLong(123456789);
 	//writeLong(10);
 	while(1){

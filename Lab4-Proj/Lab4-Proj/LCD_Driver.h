@@ -18,4 +18,5 @@ void writeLong(long i);
 
 void printAt(uint16_t num, int pos);
 
+void switchIndicator();
 #endif

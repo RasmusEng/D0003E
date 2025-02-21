@@ -11,7 +11,6 @@
 #define SETSTACK(buf,a) *((unsigned int *)(buf)+8) = (unsigned int)(a) + STACKSIZE - 4; \
 *((unsigned int *)(buf)+9) = (unsigned int)(a) + STACKSIZE - 4
 
-static int count = 0;
 
 struct thread_block {
 	void (*function)(int); // code to run

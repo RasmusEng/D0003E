@@ -13,26 +13,10 @@ PulseGenerator pulseLeft = initPulseGenerator(1);
 PulseGenerator pulseRight = initPulseGenerator(3);
 GUI gui = initGUI(pulseLeft, pulseRight);
 
-void CLK_Init(){
-	// Timer
-	DDRB = (1<<DDB7);
-}
-
-void BUTTON_Init(){
-	PORTB |= (1 << 7);
-}
-
-void BUTTON_Int(){
-	//Interrupt enables
-	EIMSK  |= (0x1 << PCINT15);
-	PCMSK1 |= (0x1 << PCINT15);
-}
-
 int main(void)
 {    
-	init();
+	INIT();
 	INSTALL(&gui, joyStickVerticalControll, IRQ_PCINT1);
 	INSTALL(&gui, joyStickHorizontalControll, IRQ_PCINT0);
-	return TINYTIMBER();
-
+	return TINYTIMBER();'
 }
