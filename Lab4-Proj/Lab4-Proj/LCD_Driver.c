@@ -91,7 +91,7 @@ void writeLong(long i){
 	}
 }
 
-void printAt(uint16_t num, int pos) {
+void printAt(int num, int pos) {
 	int pp;
 	pp = pos;
 	writeChar( (num % 100) / 10 + '0', pp);
@@ -100,6 +100,5 @@ void printAt(uint16_t num, int pos) {
 }
 
 void switchIndicator(){
-	LCDDR13 ^= (0x1 << 1);
-	LCDDR18 ^= (0x1 << 1);
+	LCDDR13 ^= 1;
 }

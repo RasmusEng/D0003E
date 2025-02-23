@@ -12,11 +12,11 @@
 
 int main(void)
 {    
-	PulseController *pulseController = initPulseGenerator();
-	PulseGenerator *pulseLeft = initPulseGenerator(50, 1, 1, pulseController);
-	PulseGenerator *pulseRight = initPulseGenerator(50, 3, 4, pulseController);
-	GUI gui = initGUI(pulseLeft, pulseRight);
 	INIT();
+	PulseController pulseController = initPulseController();
+	PulseGenerator pulseLeft = initPulseGenerator(50, 1, 1, &pulseController);
+	PulseGenerator pulseRight = initPulseGenerator(50, 4, 4, &pulseController);
+	GUI gui = initGUI(&pulseLeft, &pulseRight);
 	INSTALL(&gui, joyStickVerticalControll, IRQ_PCINT1);
 	INSTALL(&gui, joyStickHorizontalControll, IRQ_PCINT0);
 	return TINYTIMBER(NULL, NULL, NULL);

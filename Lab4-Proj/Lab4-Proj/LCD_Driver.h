@@ -10,11 +10,7 @@
 //TODO finx so that printAt ans switchIndicator can be called with SYNC and ASYNC
 void LCD_Init(void);
 
-LCD_update(unsigned char data1, unsigned char data2);
-
-writeChar(char ch, int pos);
-
-void printAt(uint16_t num, int pos);
+void printAt(int num, int pos);
 
 void switchIndicator();
 #endif

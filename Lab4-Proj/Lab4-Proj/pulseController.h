@@ -1,5 +1,5 @@
-#ifndef pulseController_h
-#define pulseController_h
+#ifndef PulseController_h
+#define PulseController_h
 
 #include <stdint.h>
 #include "TinyTimber.h"
@@ -9,7 +9,7 @@ typedef struct
 	Object super;
 } PulseController;
 
-#define initpulseController() {initObject()};
+#define initPulseController() {initObject()};
 void sendSignal(PulseController *self, int);
 
 

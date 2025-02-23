@@ -20,8 +20,7 @@ void LCD_Init(void){
 	LCDCRA = (1<<LCDEN);
 
 	//Indicator bits 
-	LCDDR13 = (0x1 << 1);
-	LCDDR18 = (0x0 << 1);
+	LCDDR13 ^= 1;
 }
 
 void CLK_Init(){
@@ -30,11 +29,15 @@ void CLK_Init(){
 }
 
 void BUTTON_Init(){
-	PORTB |= (1 << 7);
+	PORTB |= (1 << 7) | (1 << 6) | (1 << 4);
+	PORTE |= (1 << 3) | (1 << 2);
+
 
     //Interrupt enables
-	EIMSK  |= (0x1 << PCINT15);
-	PCMSK1 |= (0x1 << PCINT15);
+	EIMSK  |= (1 << PCIE1) | (1 << PCIE0);
+	PCMSK1 |= (1 << PCINT11) | (1 << PCINT12) | (1 << PCINT13) | (1 << PCINT14) | (1 << PCINT15);
+	
+	PCMSK0 |= (1 << PCINT2) | (1 << PCINT3);
 }
 
 void INIT(){

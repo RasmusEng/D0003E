@@ -2,6 +2,7 @@
 #define PulseGenerator_H
 #include "TinyTimber.h"
 #include "PulseController.h"
+#include "LCD_Driver.h"
 #include <stdint.h>
 
 typedef struct
