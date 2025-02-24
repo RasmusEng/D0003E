@@ -22,6 +22,11 @@ int reset(PulseGenerator *self, int unused){
 }
 
 int generator(PulseGenerator *self, int unused){
+	
+	//LCD
+	SYNC(self->outPut, sendSignal, self->pin);
+	int fre = (500/self->currentFreq);
+	AFTER(MSEC(fre), self, generator, 0);
 	//TODO fix this sheit
 	return 0;
 }

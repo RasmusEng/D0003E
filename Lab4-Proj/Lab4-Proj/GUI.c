@@ -7,8 +7,11 @@
 int freqUp(GUI *self, int unUsed){
 	if(self->isLeft){
 		SYNC(self->left, increase, 0);
+		SYNC(self->left, generator, 0);
+		
 	}else{
 		SYNC(self->right, increase, 0);
+		SYNC(self->right, generator, 0);
 	}
 	return 0;
 }

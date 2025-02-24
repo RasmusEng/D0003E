@@ -21,6 +21,6 @@ typedef struct
 int increase(PulseGenerator *self, int);
 int decrease(PulseGenerator *self, int);
 int reset(PulseGenerator *self, int);
-int generator(PulseGenerator *self, int); //MBY not int return ＼(ﾟｰﾟ＼)
+int generator(PulseGenerator *self, int);
 
 #endif
