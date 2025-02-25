@@ -2,6 +2,7 @@
 #include "LCD_Driver.h"
 #include "PulseGenerator.h"
 #include <avr/io.h>
+#include <util/delay.h>
 //TODO: Check every call if it should be SYNC or SYNC
 static int holdDelay = 200;
 
@@ -12,6 +13,7 @@ int freqUp(GUI *self, int unUsed){
 		ASYNC(self->right, increase, 0);
 		//Call generator her or in increase?
 	}
+	
 	return 0;
 }
 
@@ -40,7 +42,8 @@ int press(GUI *self, int unUsed){
 }
 
 int joyStickHorizontalControll(GUI *self, int unUsed){
-	SYNC(self,switchState, 0);
+	AFTER(MSEC(holdDelay), self, switchState, 0);
+	//ASYNC(self,switchState, 0);
 	return 0;
 }
 
@@ -49,9 +52,12 @@ int joyStickVerticalControll(GUI *self, int unUsed){
 		//SYNC(self, freqDown, 0);
 		AFTER(MSEC(holdDelay), self, freqDown, 0);
     }
-    if (!(PINB & (1 << PB6))) { //UP
+    while (!(PINB & (1 << PB6))) { //UP
 		//SYNC(self, freqUp, 0);
-		AFTER(MSEC(holdDelay), self, freqUp, 0);
+		//AFTER(MSEC(holdDelay), self, freqUp, 0);
+		//ASYNC(self, freqUp, 0);
+		_delay_ms(100);
+		
     }
     if (!(PINB & (1 << PB4))) { //PRESS
         //SYNC(self, press, 0);s
