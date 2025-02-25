@@ -40,8 +40,10 @@ int press(GUI *self, int unUsed){
 }
 
 int joyStickHorizontalControll(GUI *self, int unUsed){
-	AFTER(MSEC(200), self, switchState, 0);
-	//ASYNC(self,switchState, 0);
+	if((!(PINE & (1 << PE1)) || !(PINE & (1 << PE6)))){
+		//AFTER(MSEC(200), self, switchState, 0);
+	ASYNC(self,switchState, 0);
+	}
 	return 0;
 }
 
