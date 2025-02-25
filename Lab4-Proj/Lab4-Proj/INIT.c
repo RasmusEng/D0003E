@@ -32,7 +32,6 @@ void BUTTON_Init(){
 	PORTB |= (1 << 7) | (1 << 6) | (1 << 4);
 	PORTE |= (1 << 3) | (1 << 2);
 
-
     //Interrupt enables
 	EIMSK  |= (1 << PCIE1) | (1 << PCIE0);
 	PCMSK1 |= (1 << PCINT11) | (1 << PCINT12) | (1 << PCINT13) | (1 << PCINT14) | (1 << PCINT15);

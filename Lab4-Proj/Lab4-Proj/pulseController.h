@@ -11,6 +11,7 @@ typedef struct
 
 #define initPulseController() {initObject()};
 int sendSignal(PulseController *self, int);
+int setLow(PulseController *self, int pin);
 
 
 #endif

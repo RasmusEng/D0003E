@@ -21,7 +21,10 @@ static unsigned char charCodes[10][4] = {
 	{0x1,0x5,0xB,0x0}, // 9
 };
 
-//Move to INIT 
+static unsigned char offsetPos[8] = {
+	/*THis list is used to offset positions of characters for the display */
+	0,0,1,1,2,2,3,3
+};
 
 void LCD_update(unsigned char data1, unsigned char data2){
 	/* LCD Blanking and Low power waveform are unchanged. */
@@ -29,12 +32,6 @@ void LCD_update(unsigned char data1, unsigned char data2){
 	LCDDR0 = data1;
 	LCDDR6 = data2;
 }
-
-unsigned char offsetPos[8] = {
-	/*THis list is used to offset positions of characters for the display */
-	0,0,1,1,2,2,3,3
-};
-
 
 void writeChar(char ch, int pos){
 	/* Returns if given input is not possible to print */
@@ -64,41 +61,21 @@ void writeChar(char ch, int pos){
 	lcd_base[10] = charCodes[number][2]<<shift | lcd_base[10];
 	lcd_base[15] = charCodes[number][3]<<shift | lcd_base[15];
 }
-
-void writeLong(long i){
-	/* Writes the 6 least significant numbers of a long */
-	if(i == 0){
-		writeChar('0', 6);
-		return;
-	}
-	char chars[7];
 	
-	for(int j = 5; j>-1; j--){
-		chars[j] = (char)(i%10)+48;
-		i /= 10;
-	}
-	
-	bool importantNum = false;
-	for(int j = 6; j>-1; j--){
-		if(!importantNum){
-			if(chars[j] == 0){
-				continue;
-				}else{
-				importantNum = true;
-			}
-		}
-		writeChar(chars[j],j);
-	}
-}
-
-void printAt(int num, int pos) {
+int printAt(LCD_Driver *self, const int map) {
+	union PrintPun p = {.map = map};
 	int pp;
-	pp = pos;
+	pp = p.args.pos;
+	int num = p.args.num;
 	writeChar( (num % 100) / 10 + '0', pp);
 	pp++;
 	writeChar( num % 10 + '0', pp);
+	
+	return 0;
 }
 
-void switchIndicator(){
+int switchIndicator(LCD_Driver *self, int unused){
 	LCDDR13 ^= 1;
+	
+	return 0;
 }

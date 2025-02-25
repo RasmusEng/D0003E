@@ -7,10 +7,28 @@
 #ifndef LCD_Driver_H_
 #define LCD_Driver_H_ 
 #include <stdint.h>
-//TODO finx so that printAt ans switchIndicator can be called with SYNC and ASYNC
-void LCD_Init(void);
+#include "TinyTimber.h"
 
-void printAt(int num, int pos);
+typedef struct
+{
+	Object super;
+} LCD_Driver;
 
-void switchIndicator();
+#define initLCD_Driver() {initObject()};
+	
+struct Packed {
+	unsigned int num  : 7;
+	unsigned int pos  : 3;
+};
+
+union PrintPun {
+	struct Packed args;
+	int map;
+};
+
+#define PACK_PRINT(num, pos) ((union PrintPun){ .args = { num, pos } }).map
+
+int printAt(LCD_Driver *self, int);
+
+int switchIndicator(LCD_Driver *self, int);
 #endif

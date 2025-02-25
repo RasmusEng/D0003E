@@ -13,10 +13,10 @@ typedef struct
     int pos;
     int pin;
     PulseController *outPut;
+	LCD_Driver *display;
 } PulseGenerator;
 
-// Oklart om vi sätter lastfreq till currentFreq här
-#define initPulseGenerator(currentFreq, pos, pin, outPut) {initObject(), currentFreq, currentFreq, pos, pin, outPut}
+#define initPulseGenerator(currentFreq, pos, pin, outPut, display) {initObject(), currentFreq, currentFreq, pos, pin, outPut, display}
 
 int increase(PulseGenerator *self, int);
 int decrease(PulseGenerator *self, int);
