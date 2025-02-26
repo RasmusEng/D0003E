@@ -21,8 +21,8 @@ int main(void)
 	PulseGenerator pulseRight = initPulseGenerator(0, 4, 3, &pulseController, &display);
 	GUI gui = initGUI(&pulseLeft, &pulseRight);
 	Joystick joy = initJoystick(&gui);
-	InterruptHandler inter = InterruptHandler(&joy);
-	INSTALL(&inter, joyStickVerticalControll, IRQ_PCINT1);
-	INSTALL(&inter, joyStickHorizontalControll, IRQ_PCINT0);
+	InterruptHandler inter = initInterruptHandler(&joy);
+	INSTALL(&inter, Change, IRQ_PCINT1);
+	INSTALL(&inter, Switch, IRQ_PCINT0);
 	return TINYTIMBER(NULL, NULL, NULL);
 }
