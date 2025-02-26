@@ -37,7 +37,8 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../JoystickInter.c \
+../InteruptHandler.c \
+../Joystick.c \
 ../GUI.c \
 ../INIT.c \
 ../LCD_Driver.c \
@@ -54,7 +55,8 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-JoystickInter.o \
+InteruptHandler.o \
+Joystick.o \
 GUI.o \
 INIT.o \
 LCD_Driver.o \
@@ -64,7 +66,8 @@ PulseGenerator.o \
 TinyTimber.o
 
 OBJS_AS_ARGS +=  \
-JoystickInter.o \
+InteruptHandler.o \
+Joystick.o \
 GUI.o \
 INIT.o \
 LCD_Driver.o \
@@ -74,7 +77,8 @@ PulseGenerator.o \
 TinyTimber.o
 
 C_DEPS +=  \
-JoystickInter.d \
+InteruptHandler.d \
+Joystick.d \
 GUI.d \
 INIT.d \
 LCD_Driver.d \
@@ -84,7 +88,8 @@ PulseGenerator.d \
 TinyTimber.d
 
 C_DEPS_AS_ARGS +=  \
-JoystickInter.d \
+InteruptHandler.d \
+Joystick.d \
 GUI.d \
 INIT.d \
 LCD_Driver.d \
@@ -107,7 +112,14 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
-./JoystickInter.o: .././JoystickInter.c
+./InteruptHandler.o: .././InteruptHandler.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DNDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -O0 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -mmcu=atmega169p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega169p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./Joystick.o: .././Joystick.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DNDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -O0 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -mmcu=atmega169p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega169p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

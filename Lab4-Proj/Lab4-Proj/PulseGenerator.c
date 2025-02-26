@@ -1,34 +1,41 @@
 #include "PulseGenerator.h"
 
 int increase(PulseGenerator *self, int unused){
-	if (!(self->currentFreq >= 99)) self->currentFreq += 1;
-	ASYNC(self->display, printAt, PACK_PRINT(self->currentFreq, self->pos));
+	if (!(self->currentFreq >= 99)){
+		 self->currentFreq += 1;
+		ASYNC(self->display, printAt, PACK_PRINT(self->currentFreq, self->pos));
+	}
 	if(self->currentFreq == 1){
 		ASYNC(self, generator, 0);
 	}
-	return self->currentFreq;
+	return 0;
 }
 
 int decrease(PulseGenerator *self, int unused){
-	if (!(self->currentFreq == 0)) self->currentFreq -= 1;
-	ASYNC(self, setLow, self->pin);
+	if (self->currentFreq > 0) self->currentFreq -= 1;
+	
+	if(self->currentFreq == 0){
+		ASYNC(self, setLow, self->pin);
+		
+	}
 	ASYNC(self->display, printAt, PACK_PRINT(self->currentFreq, self->pos));
 	
-	return self->currentFreq;
+	return 0;
 }
 
 int reset(PulseGenerator *self, int unused){
 	if (self->currentFreq == 0){
 		self->currentFreq = self->lastFreq;
 		if(self->currentFreq != 0) ASYNC(self, generator, 0);
-		}else{
+	}
+	else{
 		self->lastFreq = self->currentFreq;
 		self->currentFreq = 0;
 		ASYNC(self, setLow, self->pin);
 	}
 	ASYNC(self->display, printAt, PACK_PRINT(self->currentFreq, self->pos));
 	
-	return self->currentFreq;
+	return 0;
 }
 
 int generator(PulseGenerator *self, int unused){

@@ -9,8 +9,8 @@
 #include "INIT.h"
 #include "GUI.h"
 #include "LCD_Driver.h"
-#include "JoystickInter.h"
-
+#include "Joystick.h"
+#include "InteruptHandler.h"
 
 int main(void)
 {    
@@ -20,10 +20,9 @@ int main(void)
 	PulseGenerator pulseLeft = initPulseGenerator(0, 1, 1, &pulseController, &display);
 	PulseGenerator pulseRight = initPulseGenerator(0, 4, 3, &pulseController, &display);
 	GUI gui = initGUI(&pulseLeft, &pulseRight);
-	JoystickInter joy = initJoystickInter(&gui);
-	//ASYNC(&display, printAt, PACK_PRINT(pulseLeft.currentFreq, pulseLeft.pos));
-	//ASYNC(&display, printAt, PACK_PRINT(pulseRight.currentFreq, pulseRight.pos));
-	INSTALL(&joy, joyStickVerticalControll, IRQ_PCINT1);
-	INSTALL(&joy, joyStickHorizontalControll, IRQ_PCINT0);
+	Joystick joy = initJoystick(&gui);
+	InterruptHandler inter = InterruptHandler(&joy);
+	INSTALL(&inter, joyStickVerticalControll, IRQ_PCINT1);
+	INSTALL(&inter, joyStickHorizontalControll, IRQ_PCINT0);
 	return TINYTIMBER(NULL, NULL, NULL);
 }

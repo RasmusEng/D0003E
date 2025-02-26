@@ -73,9 +73,3 @@ int printAt(LCD_Driver *self, const int map) {
 	
 	return 0;
 }
-
-int switchIndicator(LCD_Driver *self, int unused){
-	LCDDR13 ^= 1;
-	
-	return 0;
-}
