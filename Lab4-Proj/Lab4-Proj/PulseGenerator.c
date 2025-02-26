@@ -40,4 +40,3 @@ int generator(PulseGenerator *self, int unused){
 
 	return 0;
 }
-

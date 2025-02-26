@@ -26,42 +26,55 @@ int freqDown(GUI *self, int unUsed){
 
 int switchState(GUI *self, int unUsed){
     self->isLeft ^= true;
-	ASYNC(self, switchIndicator, 0);
+	//ASYNC(self, switchIndicator, 0);
+	LCDDR13 ^= 1;
 	return 0;
 }
 
 int press(GUI *self, int unUsed){
-    if(self->isLeft){
-        ASYNC(self->left, reset,0);
-    }else{
-		ASYNC(self->right, reset,0);
-    }
+	if(self->isLeft){
+		ASYNC(self->left, reset, 0);  
+		} else {
+		ASYNC(self->right, reset, 0); 
+	}
+	return 0;
+}
+
+/*
+int holdJoyStick(GUI *self, int unUsed) {
+	if (!(PINB & (1 << PB7))) { // DOWN
+		ASYNC(self, freqDown, 0); // SYNC till ASYNC
+		AFTER(MSEC(2000), self, holdJoyStick, 0);
+	}
+	if (!(PINB & (1 << PB6))) { // UP
+		ASYNC(self, freqUp, 0); // SYNC till ASYNC
+		AFTER(MSEC(2000), self, holdJoyStick, 0);
+	}
 	return 0;
 }
 
 int joyStickHorizontalControll(GUI *self, int unUsed){
 	if((!(PINE & (1 << PE1)) || !(PINE & (1 << PE6)))){
-		//AFTER(MSEC(200), self, switchState, 0);
-	ASYNC(self,switchState, 0);
+		AFTER(MSEC(200), self, switchState, 0);
 	}
 	return 0;
 }
 
 int joyStickVerticalControll(GUI *self, int unUsed){
     if (!(PINB & (1 << PB7))) { //DOWN
-		//SYNC(self, freqDown, 0);
-		AFTER(MSEC(200), self, freqDown, 0);
+		//ASYNC(self, freqDown, 0);
+		AFTER(MSEC(50), self, holdJoyStick, 0);
     }
     if (!(PINB & (1 << PB6))) { //UP
-		//SYNC(self, freqUp, 0);
-		//AFTER(MSEC(holdDelay), self, freqUp, 0);
-		ASYNC(self, freqUp, 0);
+		//ASYNC(self, freqUp, 0);
+		AFTER(MSEC(50), self, holdJoyStick, 0);
 		
     }
     if (!(PINB & (1 << PB4))) { //PRESS
-        //SYNC(self, press, 0);s
-		AFTER(MSEC(200), self, press, 0);
+        //ASYNC(self, press, 0);
+		AFTER(MSEC(50), self, press, 0);
     }
-	// Todo fixa rätt return
 	return 0;
-}
+}*/
+
+
