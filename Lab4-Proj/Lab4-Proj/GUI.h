@@ -16,10 +16,8 @@ typedef struct
 #define initGUI(left1, right2) {initObject(), false, left1, right2};
 	
 	
-int freqUp();
-int freqDown();
-int switchState();
-int press();
-//int joyStickHorizontalControll();
-//int joyStickVerticalControll();
+int freqUp(GUI *self, int unUsed);
+int freqDown(GUI *self, int unUsed);
+int switchState(GUI *self, int unUsed);
+int press(GUI *self, int unUsed);
 #endif

@@ -25,7 +25,8 @@ void LCD_Init(void){
 
 void CLK_Init(){
 	// Timer
-	DDRB = (1<<DDB7);
+	DDRE |= (1 << PE4) | (1<< PE6) | (1<<PE5);
+	PORTE |= (1<<PE5);
 }
 
 void BUTTON_Init(){
@@ -34,7 +35,7 @@ void BUTTON_Init(){
 
     //Interrupt enables
 	EIMSK  |= (1 << PCIE1) | (1 << PCIE0);
-	PCMSK1 |= (1 << PCINT11) | (1 << PCINT12) | (1 << PCINT13) | (1 << PCINT14) | (1 << PCINT15);
+	PCMSK1 |= (1 << PCINT12) | (1 << PCINT14) | (1 << PCINT15);
 	
 	PCMSK0 |= (1 << PCINT2) | (1 << PCINT3);
 }

@@ -9,7 +9,7 @@ int sendSignal(PulseController *self, int pin){
 		PORTE ^= (1 << PE6);
 	}
 	
-	LCDDR18 ^= 1;
+	//LCDDR18 ^= 1;
 	return 0;
 }
 

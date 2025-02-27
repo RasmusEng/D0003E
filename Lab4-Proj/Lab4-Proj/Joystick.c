@@ -5,17 +5,18 @@
 int holdJoyStick(Joystick *self, int unUsed) {
 	if (!(PINB & (1 << PB7))) { // DOWN
 		ASYNC(self->gui, freqDown, 0); // SYNC till ASYNC
-		AFTER(MSEC(500), self, holdJoyStick, 0);
+		AFTER(MSEC(200), self, holdJoyStick, 0);
 	}
 	if (!(PINB & (1 << PB6))) { // UP
 		ASYNC(self->gui, freqUp, 0); // SYNC till ASYNC
-		AFTER(MSEC(500), self, holdJoyStick, 0);
+		AFTER(MSEC(200), self, holdJoyStick, 0);
 	}
 	return 0;
 }
 
 int joyStickHorizontalControll(Joystick *self, int unUsed){
 	if((!(PINE & (1 << PE1)) || !(PINE & (1 << PE6)))){
+		//ASYNC(self->gui, switchState,0);
 		AFTER(MSEC(200), self->gui, switchState, 0);
 	}
 	return 0;
@@ -32,8 +33,8 @@ int joyStickVerticalControll(Joystick *self, int unUsed){
 		
 	}
 	if (!(PINB & (1 << PB4))) { //PRESS
-		//ASYNC(self, press, 0);
-		AFTER(MSEC(50), self, press, 0);
+		//ASYNC(self->gui, press, 0);
+		AFTER(MSEC(50), self->gui, press, 0);
 	}
 	return 0;
 }

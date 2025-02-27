@@ -5,7 +5,12 @@
 
 
 void Switch(InterruptHandler *self, int arg) {
-	ASYNC(self->joystick, joyStickHorizontalControll(), 0);
+	if (self->risingEdge){
+		self->risingEdge = false;
+		ASYNC(self->joystick, joyStickHorizontalControll, 0);		
+	}else{
+		self->risingEdge = true;
+	}
 }
 
 /* Interrupt function for changing the active pulse generator frequency */
