@@ -24,7 +24,7 @@ int freqDown(GUI *self, int unUsed){
 }
 
 int switchState(GUI *self, int unUsed){
-    self->isLeft ^= true;
+	self->isLeft = self->isLeft ? false : true;
 	LCDDR13 ^= 1;
 	return 0;
 }

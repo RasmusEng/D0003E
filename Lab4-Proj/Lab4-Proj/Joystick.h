@@ -14,7 +14,7 @@ typedef struct
 
 #define initJoystick(gui) {initObject(), gui};
 
-int joyStickHorizontalControll();
-int joyStickVerticalControll();
+int joyStickHorizontalControll(Joystick *self, int unUsed);
+int joyStickVerticalControll(Joystick *self, int unUsed);
 
 #endif

@@ -4,6 +4,7 @@
 #include "TinyTimber.h"
 
 
+
 void Switch(InterruptHandler *self, int arg) {
 	if (self->risingEdge){
 		self->risingEdge = false;
