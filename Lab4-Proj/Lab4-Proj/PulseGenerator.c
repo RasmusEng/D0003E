@@ -2,7 +2,7 @@
 
 int increase(PulseGenerator *self, int unused){
 	if (!(self->currentFreq >= 99)){
-		 self->currentFreq += 1;
+		self->currentFreq += 1;
 		ASYNC(self->display, printAt, PACK_PRINT(self->currentFreq, self->pos));
 	}
 	if(self->currentFreq == 1){
