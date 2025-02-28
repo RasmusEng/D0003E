@@ -14,7 +14,6 @@ void Switch(InterruptHandler *self, int arg) {
 	}
 }
 
-/* Interrupt function for changing the active pulse generator frequency */
 void Change(InterruptHandler *self, int arg) {
 	ASYNC(self->joystick, joyStickVerticalControll, 0);
 }
