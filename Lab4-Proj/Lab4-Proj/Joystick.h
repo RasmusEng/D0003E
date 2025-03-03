@@ -10,6 +10,7 @@ typedef struct
 	Object super;
 	GUI *gui;
 	bool risingEdge;
+	bool held;
 } Joystick;
 
 #define initJoystick(gui) {initObject(), gui};
