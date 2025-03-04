@@ -23,12 +23,12 @@ int joyStickHorizontalControll(Joystick *self, int unUsed){
 
 int joyStickVerticalControll(Joystick *self, int unUsed){
 	if (!(PINB & (1 << PB7))) { //DOWN
-		//ASYNC(self, holdJoyStick, 0);
+		ASYNC(self, holdJoyStick, 0);
 		ASYNC(self->gui, freqDown, 0);
 		
 	}
 	if (!(PINB & (1 << PB6))) { //UP
-		//ASYNC(self, holdJoyStick, 0);
+		ASYNC(self, holdJoyStick, 0);
 		ASYNC(self->gui, freqUp, 0);
 	}
 	if (!(PINB & (1 << PB4))) { //PRESS

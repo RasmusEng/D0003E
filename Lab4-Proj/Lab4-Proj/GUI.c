@@ -38,3 +38,8 @@ int press(GUI *self, int unUsed){
 	return 0;
 }
 
+
+void startPulse(GUI *self, int unUsed){
+	ASYNC(self->left, generator, 0);
+	ASYNC(self->right, generator, 0);
+}

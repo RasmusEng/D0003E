@@ -47,8 +47,3 @@ void INIT(){
 	CLK_Init();
 	BUTTON_Init();
 }
-
-void INIT_PULSE_GEN(PulseGenerator *left, PulseGenerator *right){
-	ASYNC(left, generator, 0);
-	ASYNC(right, generator, 0);
-}

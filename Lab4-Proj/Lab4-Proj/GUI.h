@@ -20,4 +20,5 @@ int freqUp(GUI *self, int unUsed);
 int freqDown(GUI *self, int unUsed);
 int switchState(GUI *self, int unUsed);
 int press(GUI *self, int unUsed);
+void startPulse(GUI *self, int unUsed);
 #endif
