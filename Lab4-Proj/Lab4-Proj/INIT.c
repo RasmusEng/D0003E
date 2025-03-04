@@ -1,6 +1,7 @@
 #include "LCD_Driver.h"
 #include <avr/io.h>
 #include <stdbool.h>
+#include "PulseGenerator.h"
 
 void CPUCLK_Init(void){
 	CLKPR = 0x80;
@@ -45,4 +46,9 @@ void INIT(){
 	LCD_Init();
 	CLK_Init();
 	BUTTON_Init();
+}
+
+void INIT_PULSE_GEN(PulseGenerator *left, PulseGenerator *right){
+	ASYNC(left, generator, 0);
+	ASYNC(right, generator, 0);
 }

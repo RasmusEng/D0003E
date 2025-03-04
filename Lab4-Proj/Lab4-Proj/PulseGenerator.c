@@ -5,9 +5,6 @@ int increase(PulseGenerator *self, int unused){
 		self->currentFreq += 1;
 		ASYNC(self->display, printAt, PACK_PRINT(self->currentFreq, self->pos));
 	}
-	if(self->currentFreq == 1){
-		ASYNC(self, generator, 0);
-	}
 	return 0;
 }
 
@@ -39,10 +36,12 @@ int reset(PulseGenerator *self, int unused){
 }
 
 int generator(PulseGenerator *self, int unused){
-	if(self->currentFreq){
+	if(self->currentFreq){ //Not zero
 		ASYNC(self->outPut, sendSignal, self->pin);
 		int fre = (500/self->currentFreq);
 		AFTER(MSEC(fre), self, generator, 0);
+	}else{ //Zero
+		AFTER(MSEC(500), self, generator, 0);
 	}
 
 	return 0;

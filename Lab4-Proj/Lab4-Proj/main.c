@@ -23,6 +23,7 @@ int main(void)
 	PulseGenerator pulseRight = initPulseGenerator(0, 4, 3, &pulseController, &display);
 	GUI gui = initGUI(&pulseLeft, &pulseRight);
 	Joystick joy = initJoystick(&gui);
+	INIT_PULSE_GEN(&pulseLeft, &pulseRight);
 	InterruptHandler inter = initInterruptHandler(&joy);
 	INSTALL(&inter, Switch, IRQ_PCINT0);
 	INSTALL(&inter, Change, IRQ_PCINT1);
