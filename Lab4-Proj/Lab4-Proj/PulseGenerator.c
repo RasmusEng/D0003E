@@ -12,7 +12,7 @@ int decrease(PulseGenerator *self, int unused){
 	if (self->currentFreq > 0) self->currentFreq -= 1;
 	
 	if(self->currentFreq == 0){
-		ASYNC(self, setLow, self->pin);
+		//ASYNC(self, setLow, self->pin);
 		
 	}
 	ASYNC(self->display, printAt, PACK_PRINT(self->currentFreq, self->pos));
@@ -41,7 +41,7 @@ int generator(PulseGenerator *self, int unused){
 		AFTER(MSEC(fre), self, generator, 0);
 	}else{ //Zero
 		ASYNC(self, setLow, self->pin);
-		AFTER(MSEC(1000), self, generator, 0);
+		AFTER(MSEC(500), self, generator, 0);
 	}
 
 	return 0;
