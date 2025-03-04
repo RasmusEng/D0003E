@@ -1,9 +1,11 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include "TinyTimber.h"
+#include <avr/io.h>
 #include <stdbool.h>
+#include "TinyTimber.h"
 #include "PulseGenerator.h"
+#include "LCD_Driver.h"
 
 typedef struct
 {

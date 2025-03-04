@@ -1,8 +1,4 @@
 #include "GUI.h"
-#include "LCD_Driver.h"
-#include "PulseGenerator.h"
-#include <avr/io.h>
-//TODO: Check every call if it should be SYNC or SYNC
 
 int freqUp(GUI *self, int unUsed){
 	if(self->isLeft){
@@ -24,8 +20,8 @@ int freqDown(GUI *self, int unUsed){
 }
 
 int switchState(GUI *self, int unUsed){
-	self->isLeft = self->isLeft ? false : true;
-	LCDDR13 ^= 1;
+	self->isLeft = !self->isLeft;
+	//LCDDR13 ^= 1; //Indicator
 	return 0;
 }
 
@@ -37,7 +33,6 @@ int press(GUI *self, int unUsed){
 	}
 	return 0;
 }
-
 
 void startPulse(GUI *self, int unUsed){
 	ASYNC(self->left, generator, 0);

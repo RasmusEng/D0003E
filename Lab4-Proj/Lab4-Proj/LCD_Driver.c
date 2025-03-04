@@ -3,10 +3,8 @@
 *
 *  Author: Joel & Rasmus
 */
-
-#include "LCD_Driver.h"
 #include <avr/io.h>
-#include <stdbool.h>
+#include "LCD_Driver.h"
 
 static unsigned char charCodes[10][4] = {
 	{0x1,0x5,0x5,0x1}, // 0

@@ -1,9 +1,11 @@
 #ifndef JoystickInter_H
 #define JoystickInter_H
 
-#include "TinyTimber.h"
-#include "GUI.h"
 #include <stdbool.h>
+#include <avr/io.h>
+#include "TinyTimber.h"
+#include "Joystick.h"
+#include "GUI.h"
 
 typedef struct
 {

@@ -11,10 +11,6 @@ int increase(PulseGenerator *self, int unused){
 int decrease(PulseGenerator *self, int unused){
 	if (self->currentFreq > 0) self->currentFreq -= 1;
 	
-	if(self->currentFreq == 0){
-		//ASYNC(self, setLow, self->pin);
-		
-	}
 	ASYNC(self->display, printAt, PACK_PRINT(self->currentFreq, self->pos));
 	
 	return 0;
@@ -27,7 +23,6 @@ int reset(PulseGenerator *self, int unused){
 	else{
 		self->lastFreq = self->currentFreq;
 		self->currentFreq = 0;
-		ASYNC(self, setLow, self->pin);
 	}
 	ASYNC(self->display, printAt, PACK_PRINT(self->currentFreq, self->pos));
 	

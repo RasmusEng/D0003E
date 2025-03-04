@@ -1,9 +1,10 @@
 #ifndef PulseGenerator_H
 #define PulseGenerator_H
-#include "TinyTimber.h"
-#include "PulseController.h"
-#include "LCD_Driver.h"
+
 #include <stdint.h>
+#include "PulseController.h"
+#include "TinyTimber.h"
+#include "LCD_Driver.h"
 
 typedef struct
 {
