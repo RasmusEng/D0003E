@@ -21,7 +21,7 @@ int freqDown(GUI *self, int unUsed){
 
 int switchState(GUI *self, int unUsed){
 	self->isLeft = !self->isLeft;
-	//LCDDR13 ^= 1; //Indicator
+	LCDDR13 ^= 1; //Indicator
 	return 0;
 }
 
@@ -34,7 +34,9 @@ int press(GUI *self, int unUsed){
 	return 0;
 }
 
-void startPulse(GUI *self, int unUsed){
+int startPulse(GUI *self, int unUsed){
 	ASYNC(self->left, generator, 0);
 	ASYNC(self->right, generator, 0);
+	
+	return unUsed;
 }

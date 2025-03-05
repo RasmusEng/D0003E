@@ -13,8 +13,8 @@ typedef struct {
 	bool risingEdge;
 } InterruptHandler;
 
-void Switch(InterruptHandler *self, int arg);
-void Change(InterruptHandler *self, int arg);
+int Switch(InterruptHandler *self, int arg);
+int Change(InterruptHandler *self, int arg);
 
 #define initInterruptHandler(js) { initObject(), js, false}
 

@@ -26,5 +26,6 @@ int main(void)
 	InterruptHandler inter = initInterruptHandler(&joy);
 	INSTALL(&inter, Switch, IRQ_PCINT0);
 	INSTALL(&inter, Change, IRQ_PCINT1);
+	//return TINYTIMBER(NULL, NULL, NULL);
 	return TINYTIMBER(&gui, startPulse, 0);
 }

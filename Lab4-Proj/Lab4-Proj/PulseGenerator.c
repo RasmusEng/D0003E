@@ -30,11 +30,11 @@ int reset(PulseGenerator *self, int unused){
 }
 
 int generator(PulseGenerator *self, int unused){
-	if(self->currentFreq != 0){ //Not zero
+	if(self->currentFreq > 0){ //Not zero
 		ASYNC(self->outPut, sendSignal, self->pin);
 		int fre = (500/self->currentFreq);
 		AFTER(MSEC(fre), self, generator, 0);
-	}else{ //Zero
+	}else{ //Zeros
 		ASYNC(self, setLow, self->pin);
 		AFTER(MSEC(500), self, generator, 0);
 	}
