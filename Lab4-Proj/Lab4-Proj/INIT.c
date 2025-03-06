@@ -1,40 +1,24 @@
+#include <avr/io.h>
 #include "INIT.h"
 
-void LCD_Init(void){
-	//Use 32 kHz crystal oscillator
-	//1/3 Bias and 1/4 duty, SEG0:SEG24 is used as port pins
-	LCDCRB = (1<<LCDCS) | (1<<LCDMUX0)| (1<<LCDMUX1)|(1<<LCDPM0) |(1<<LCDPM1) |(1<<LCDPM2);
-	/* Using 16 as prescaler selection and 8 as LCD Clock Divide */
-	/* gives a frame rate of 32 Hz */
-	LCDFRR = (1<<LCDCD0) | (1<<LCDCD1) | (1<<LCDCD2);
-	/* Set segment drive time to 300 μs and output voltage to 3.35 V*/
-	LCDCCR = (1<<LCDDC0) | (1<<LCDCC1) | (1<<LCDCC2) | (1<<LCDCC3);
-	/* Enable LCD, low power waveform and no interrupt enabled */
-	LCDCRA = (1<<LCDEN);
 
-	//Indicator bits 
-	LCDDR13 ^= 1;
-}
+void INIT(void) {
+    // Clock.
+    CLKPR  = SET(CLKPCE);
+    CLKPR  = 0;
 
-void CLK_Init(){
-	// Timer
-	DDRE |= (1 << PE4) | (1<< PE6) | (1<<PE5);
-	PORTE |= (1<<PE5);
-}
+    // LCD.
+    LCDCRA = SET(LCDEN)   | SET(LCDAB);
+    LCDCRB = SET(LCDCS)
+           | SET(LCDMUX1) | SET(LCDMUX0)
+           | SET(LCDPM2)  | SET(LCDPM1)  | SET(LCDPM0);
+    LCDFRR = SET(LCDCD2)  | SET(LCDCD1)  | SET(LCDCD0);
+    LCDCCR = SET(LCDCC3)  | SET(LCDCC2)  | SET(LCDCC1)  | SET(LCDCC0);
 
-void BUTTON_Init(){
-	PORTB |= (1 << 7) | (1 << 6) | (1 << 4);
-	PORTE |= (1 << 3) | (1 << 2);
-
-    //Interrupt enables
-	EIMSK  |= (1 << PCIE1) | (1 << PCIE0);
-	PCMSK1 |= (1 << PCINT12) | (1 << PCINT14) | (1 << PCINT15);
-	
-	PCMSK0 |= (1 << PCINT2) | (1 << PCINT3);
-}
-
-void INIT(){
-	LCD_Init();
-	CLK_Init();
-	BUTTON_Init();
+    // Joystick.
+    PORTB  = SET(PB7)     | SET(PB6)     | SET(PB4);
+    PORTE  = SET(PE3)     | SET(PE2);
+    EIMSK  = SET(PCIE1)   | SET(PCIE0);
+    PCMSK0 = SET(PCINT3)  | SET(PCINT2);
+    PCMSK1 = SET(PCINT15) | SET(PCINT14) | SET(PCINT12);
 }
