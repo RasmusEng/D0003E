@@ -10,7 +10,6 @@
 typedef struct {
 	Object super;
 	Joystick *joystick;
-	bool risingEdge;
 } InterruptHandler;
 
 int Switch(InterruptHandler *self, int arg);
@@ -18,4 +17,4 @@ int Change(InterruptHandler *self, int arg);
 
 #define initInterruptHandler(js) { initObject(), js, false}
 
-#endif /* INTERRUPTHANDLER_H_ */
+#endif

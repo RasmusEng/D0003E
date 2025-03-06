@@ -1,10 +1,3 @@
-/*
- * LCC_Driver.h
- *
- * Created: 2025-01-23 10:11:39
- *  Author: Joel & Rasmus
- */ 
-
 #ifndef LCD_Driver_H_
 #define LCD_Driver_H_ 
 

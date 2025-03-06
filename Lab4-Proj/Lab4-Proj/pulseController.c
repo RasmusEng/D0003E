@@ -6,8 +6,6 @@ int sendSignal(PulseController *self, int pin){
 		}else if(pin == 3){
 		PORTE ^= (1 << PE6);
 	}
-	
-	//sLCDDR18 ^= 1;
 	return 0;
 }
 

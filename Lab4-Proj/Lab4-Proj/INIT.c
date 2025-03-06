@@ -3,22 +3,18 @@
 
 
 void INIT(void) {
-    // Clock.
-    CLKPR  = SET(CLKPCE);
-    CLKPR  = 0;
+    //LCD
+    LCDCRA = (0x1 << LCDEN)   | (0x1 << LCDAB);
+    LCDCRB = (0x1 << LCDCS)   | 
+             (0x1 << LCDMUX1) | (0x1 << LCDMUX0) | 
+             (0x1 << LCDPM2)  | (0x1 << LCDPM1)  | (0x1 << LCDPM0);
+    LCDFRR = (0x1 << LCDCD2)  | (0x1 << LCDCD1)  | (0x1 << LCDCD0);
+    LCDCCR = (0x1 << LCDCC3)  | (0x1 << LCDCC2)  | (0x1 << LCDCC1)  | (0x1 << LCDCC0);
 
-    // LCD.
-    LCDCRA = SET(LCDEN)   | SET(LCDAB);
-    LCDCRB = SET(LCDCS)
-           | SET(LCDMUX1) | SET(LCDMUX0)
-           | SET(LCDPM2)  | SET(LCDPM1)  | SET(LCDPM0);
-    LCDFRR = SET(LCDCD2)  | SET(LCDCD1)  | SET(LCDCD0);
-    LCDCCR = SET(LCDCC3)  | SET(LCDCC2)  | SET(LCDCC1)  | SET(LCDCC0);
-
-    // Joystick.
-    PORTB  = SET(PB7)     | SET(PB6)     | SET(PB4);
-    PORTE  = SET(PE3)     | SET(PE2);
-    EIMSK  = SET(PCIE1)   | SET(PCIE0);
-    PCMSK0 = SET(PCINT3)  | SET(PCINT2);
-    PCMSK1 = SET(PCINT15) | SET(PCINT14) | SET(PCINT12);
+    //Joystick.
+    PORTB  = (0x1 << PB7)     | (0x1 << PB6)     | (0x1 << PB4);
+    PORTE  = (0x1 << PE3)     | (0x1 << PE2);
+    EIMSK  = (0x1 << PCIE1)   | (0x1 << PCIE0);
+    PCMSK0 = (0x1 << PCINT3)  | (0x1 << PCINT2);
+    PCMSK1 = (0x1 << PCINT15) | (0x1 << PCINT14) | (0x1 << PCINT12);
 }

@@ -1,8 +1,3 @@
-/*
-* LCD_Driver.c
-*
-*  Author: Joel & Rasmus
-*/
 #include <avr/io.h>
 #include "LCD_Driver.h"
 
@@ -20,7 +15,7 @@ static unsigned char charCodes[10][4] = {
 };
 
 static unsigned char offsetPos[8] = {
-	/*THis list is used to offset positions of characters for the display */
+	/*This list is used to offset positions of characters for the display */
 	0,0,1,1,2,2,3,3
 };
 
