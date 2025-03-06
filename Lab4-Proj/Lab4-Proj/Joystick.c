@@ -5,22 +5,22 @@ int holdJoyStick(Joystick *self, int unUsed) {
 		self->held = true;
 		ASYNC(self->gui, freqDown, 0); // SYNC till ASYNC
 		AFTER(MSEC(250), self, holdJoyStick, 0);
-	}else if (!(PINB & (1 << PB6))) { // UP
+	}
+	if (!(PINB & (1 << PB6))) { // UP
 		self->held = true;
 		ASYNC(self->gui, freqUp, 0); // SYNC till ASYNC
 		AFTER(MSEC(250), self, holdJoyStick, 0);
-	}else{
-		self->held = false;
 	}
+	self->held = false;
 	return 0;
 }
 
 int joyStickHorizontalControll(Joystick *self, int unUsed){
 	if((!(PINE & (1 << PE3)))){
 		ASYNC(self->gui, switchState,0);
-	}else if((!(PINE & (1 << PE4)))){
-		ASYNC(self->gui, switchState,0);
+	}else if((!(PINE & (1 << PE6)))){
 	}
+		ASYNC(self->gui, switchState,0);
 	return 0;
 	}
 
