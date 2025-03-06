@@ -1,9 +1,11 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include "TinyTimber.h"
+#include <avr/io.h>
 #include <stdbool.h>
+#include "TinyTimber.h"
 #include "PulseGenerator.h"
+#include "LCD_Driver.h"
 
 typedef struct
 {
@@ -20,4 +22,5 @@ int freqUp(GUI *self, int unUsed);
 int freqDown(GUI *self, int unUsed);
 int switchState(GUI *self, int unUsed);
 int press(GUI *self, int unUsed);
+int startPulse(GUI *self, int unUsed);
 #endif

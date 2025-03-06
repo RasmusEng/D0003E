@@ -1,12 +1,4 @@
-#include "LCD_Driver.h"
-#include <avr/io.h>
-#include <stdbool.h>
-#include "PulseGenerator.h"
-
-void CPUCLK_Init(void){
-	CLKPR = 0x80;
-	CLKPR = 0x00;
-}
+#include "INIT.h"
 
 void LCD_Init(void){
 	//Use 32 kHz crystal oscillator
@@ -42,13 +34,7 @@ void BUTTON_Init(){
 }
 
 void INIT(){
-	CPUCLK_Init();
 	LCD_Init();
 	CLK_Init();
 	BUTTON_Init();
-}
-
-void INIT_PULSE_GEN(PulseGenerator *left, PulseGenerator *right){
-	ASYNC(left, generator, 0);
-	ASYNC(right, generator, 0);
 }

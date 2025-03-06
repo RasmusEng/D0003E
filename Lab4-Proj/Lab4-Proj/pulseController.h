@@ -2,7 +2,10 @@
 #define PulseController_h
 
 #include <stdint.h>
+#include <avr/io.h>
+#include "PulseController.h"
 #include "TinyTimber.h"
+#include "LCD_Driver.h"
 
 typedef struct
 {

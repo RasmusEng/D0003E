@@ -1,6 +1,4 @@
 #include "PulseController.h"
-#include <avr/io.h>
-#include "LCD_Driver.h"
 
 int sendSignal(PulseController *self, int pin){
 	if(pin == 1){
@@ -9,7 +7,7 @@ int sendSignal(PulseController *self, int pin){
 		PORTE ^= (1 << PE6);
 	}
 	
-	//LCDDR18 ^= 1;
+	//sLCDDR18 ^= 1;
 	return 0;
 }
 
