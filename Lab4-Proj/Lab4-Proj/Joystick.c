@@ -18,7 +18,7 @@ int holdJoyStick(Joystick *self, int unUsed) {
 int joyStickHorizontalControll(Joystick *self, int Used){
 	if((!(Used & (1 << PE3)))){
 		ASYNC(self->gui, switchState,0);
-	}else if((!(Used & (1 << PE6)))){
+	}else if((!(Used & (1 << PE4)))){
 		ASYNC(self->gui, switchState,0);
 	}
 	return 0;
