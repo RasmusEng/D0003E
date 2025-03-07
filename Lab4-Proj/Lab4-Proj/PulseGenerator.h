@@ -15,9 +15,10 @@ typedef struct
     int pin;
     PulseController *outPut;
 	LCD_Driver *display;
+	int High;
 } PulseGenerator;
 
-#define initPulseGenerator(currentFreq, pos, pin, outPut, display) {initObject(), currentFreq, currentFreq, pos, pin, outPut, display}
+#define initPulseGenerator(currentFreq, pos, pin, outPut, display) {initObject(), currentFreq, currentFreq, pos, pin, outPut, display, 0}
 
 int increase(PulseGenerator *self, int);
 int decrease(PulseGenerator *self, int);

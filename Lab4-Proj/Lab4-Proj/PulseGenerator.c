@@ -17,12 +17,11 @@ int decrease(PulseGenerator *self, int unused){
 }
 
 int reset(PulseGenerator *self, int unused){
-	if (self->currentFreq == 0){
-		self->currentFreq = self->lastFreq;
-	}
-	else{
+	if (self->currentFreq != 0){
 		self->lastFreq = self->currentFreq;
 		self->currentFreq = 0;
+	}else{
+		self->currentFreq = self->lastFreq;
 	}
 	ASYNC(self->display, printAt, PACK_PRINT(self->currentFreq, self->pos));
 	
@@ -31,11 +30,14 @@ int reset(PulseGenerator *self, int unused){
 
 int generator(PulseGenerator *self, int unused){
 	if(self->currentFreq > 0){ //Not zero
+		self->High = !self->High;
 		ASYNC(self->outPut, sendSignal, self->pin);
 		int fre = (500/self->currentFreq);
 		AFTER(MSEC(fre), self, generator, 0);
 	}else{ //Zeros
-		ASYNC(self, setLow, self->pin);
+		if(self->High){ //Replace with self->High for it to work
+			ASYNC(self->outPut, setLow, self->pin);
+		}
 		AFTER(MSEC(500), self, generator, 0);
 	}
 

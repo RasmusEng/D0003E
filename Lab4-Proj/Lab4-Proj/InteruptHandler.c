@@ -1,7 +1,8 @@
 #include "InteruptHandler.h"
 
 int Switch(InterruptHandler *self, int arg) {
-	AFTER(MSEC(50), self->joystick, joyStickHorizontalControll, 0);
+	//AFTER(MSEC(50), self->joystick, joyStickHorizontalControll, 0);
+	ASYNC(self->joystick, joyStickHorizontalControll, PINE);
 	return arg;
 }
 

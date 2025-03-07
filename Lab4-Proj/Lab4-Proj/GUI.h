@@ -10,7 +10,7 @@
 typedef struct
 {
     Object super;
-    bool isLeft;
+    int isLeft;
     PulseGenerator *left;
     PulseGenerator *right;
 } GUI;
