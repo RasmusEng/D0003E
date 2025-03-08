@@ -40,7 +40,6 @@ int deQueue(Bridge *self, int side){
 			switchSide(self, 0);
 		}
 	}
-
 	return 0;
 }
 
