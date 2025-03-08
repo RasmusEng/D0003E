@@ -1,20 +1,18 @@
-/*
- * LCC_Driver.h
- *
- * Created: 2025-01-23 10:11:39
- *  Author: Joel & Rasmus
- */ 
 #ifndef LCD_Driver_H_
 #define LCD_Driver_H_ 
-#include <stdint.h>
+
 #include "TinyTimber.h"
+#include "LCD_Driver.h"
+#include <stdbool.h>
+#include <avr/io.h>
+#include <stdint.h>
 
 typedef struct
 {
 	Object super;
 } LCD_Driver;
 
-#define initLCD_Driver() {initObject()};
+#define initLCD_Driver() {initObject()}
 	
 struct Packed {
 	unsigned int num  : 7;
@@ -30,5 +28,6 @@ union PrintPun {
 
 int printAt(LCD_Driver *self, int);
 
-int switchIndicator(LCD_Driver *self, int);
+int startSequence(LCD_Driver *self, int first);
+
 #endif

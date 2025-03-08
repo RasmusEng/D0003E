@@ -1,51 +1,19 @@
-/*
- * Lab5-Proj.c
- *
- * Created: 2025-03-03 13:25:42
- * Author : Joel
- */ 
-
-#include <avr/io.h>
-#define FOSC 8000000
-#define BAUD 9600
-#define MYUBRR (FOSC / (16UL * BAUD) - 1)
-
-void INIT(void) {
-	
-	UBRR0H = (uint8_t)(MYUBRR<<8);
-	UBRR0L = (uint8_t)(MYUBRR);
-
-	
-	UCSR0B = (1<<RXEN0)  | (1<<TXEN0)  | (1<<RXCIE0);
-
-	UCSR0C = (0<<UCSZ01) | (3<<UCSZ00);
-}
-
-uint8_t USART_Receive( void )
-{
-	/* Wait for data to be received */
-	while (!(UCSR0A & (1<<RXC0)));
-	/* Get and return received data from buffer */
-	return UDR0;
-}
-
-void USART_Transmit(uint8_t data )
-{
-	/* Wait for empty transmit buffer */
-	while ( !( UCSR0A & (1<<UDRE0)) );
-	/* Put data into buffer, sends the data */
-	UDR0 = data;
-}
-
-
+#include "InteruptHandler.h"
+#include "USARTSender.h"
+#include "TinyTimber.h"
+#include "LCD_Driver.h"
+#include "Bridge.h"
+#include "GUI.h"
 
 int main(void)
 {
-	INIT();
-	while (1)
-	{
-		uint8_t temp = USART_Receive();
-		USART_Transmit(temp);
-	}
+	GUI gui = initGUI();
+	LCD_Driver lcd = initLCD_Driver();
+	USARTSender usart = initUSARTSender();
+	Bridge bridge = initBridge(&gui, &usart, &lcd);
+	InterruptHandler inter = initInterruptHandler(&bridge);
+	
+	INSTALL(&inter, input, IRQ_USART0_RX);
+	
+	return TINYTIMBER(&lcd, startSequence, 1);
 }
-
