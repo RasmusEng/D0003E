@@ -3,10 +3,12 @@
 #include "TinyTimber.h"
 #include "LCD_Driver.h"
 #include "Bridge.h"
+#include "Init.h"
 #include "GUI.h"
 
 int main(void)
 {
+	init();
 	GUI gui = initGUI();
 	LCD_Driver lcd = initLCD_Driver();
 	USARTSender usart = initUSARTSender();

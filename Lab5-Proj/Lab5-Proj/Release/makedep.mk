@@ -6,6 +6,8 @@ Bridge.c
 
 GUI.c
 
+INIT.c
+
 InteruptHandler.c
 
 LCD_Driver.c
