@@ -1,18 +1,19 @@
-/*
- * Lab5-Proj.c
- *
- * Created: 2025-03-03 13:25:42
- * Author : Joel
- */ 
-
-#include <avr/io.h>
+#include "InteruptHandler.h"
+#include "USARTSender.h"
 #include "TinyTimber.h"
-
+#include "LCD_Driver.h"
+#include "Bridge.h"
+#include "GUI.h"
 
 int main(void)
 {
- 
+	GUI gui = initGUI();
+	LCD_Driver lcd = initLCD_Driver();
+	USARTSender usart = initUSARTSender();
+	Bridge bridge = initBridge(&gui, &usart, &lcd);
+	InterruptHandler inter = initInterruptHandler(&bridge);
 	
-	return TINYTIMBER(NULL, NULL, NULL);
+	INSTALL(&inter, input, IRQ_USART0_RX);
+	
+	return TINYTIMBER(&lcd, startSequence, 1);
 }
-

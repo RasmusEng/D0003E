@@ -1,12 +1,6 @@
-/*
-* LCD_Driver.c
-*
-*  Author: Joel & Rasmus
-*/
-
+#include "TinyTimber.h"
 #include "LCD_Driver.h"
 #include <avr/io.h>
-#include <stdbool.h>
 
 static unsigned char charCodes[10][4] = {
 	{0x1,0x5,0x5,0x1}, // 0
@@ -22,7 +16,7 @@ static unsigned char charCodes[10][4] = {
 };
 
 static unsigned char offsetPos[8] = {
-	/*THis list is used to offset positions of characters for the display */
+	/*This list is used to offset positions of characters for the display */
 	0,0,1,1,2,2,3,3
 };
 
@@ -62,7 +56,7 @@ void writeChar(char ch, int pos){
 	lcd_base[15] = charCodes[number][3]<<shift | lcd_base[15];
 }
 	
-int printAt(LCD_Driver *self, const int map) {
+int printAt(LCD_Driver __attribute__((unused)) *self, const int map) {
 	union PrintPun p = {.map = map};
 	int pp;
 	pp = p.args.pos;
@@ -70,5 +64,14 @@ int printAt(LCD_Driver *self, const int map) {
 	writeChar( (num % 100) / 10 + '0', pp);
 	pp++;
 	writeChar( num % 10 + '0', pp);
+	
 	return 0;
+}
+
+int startSequence(LCD_Driver *self, int first){
+	LCDDR13 ^= 1;
+	if(first){
+		AFTER(MSEC(10), self, startSequence, 0);
+	}
+	return 0; //Iam a poor man...
 }

@@ -1,9 +1,6 @@
-#include <avr/io.h>
 #include "InteruptHandler.h"
-#include "Joystick.h"
-#include "TinyTimber.h"
 
-
-void Input(InterruptHandler *self, int unUsed) {
-	ASYNC(self->joystick, joyStickVerticalControll, 0);
+int input(InterruptHandler *self, int __attribute__((unused)) unUsed) {
+	ASYNC(self->bridge, handelInput, UDR0);
+	return 0;
 }
