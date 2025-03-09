@@ -16,30 +16,31 @@ int switchSide(Bridge*, int);
 
 int deQueue(Bridge *self, int side){
 	if(self->CarsPassedCurrent<10){
-		if(side == NORTH && self->NorthGreen && (self->CarDirection == NORTH)){
+		if(self->NorthGreen && (self->CarDirection == NORTH)){
 			if(self->NorthQueueSize > 0){
 				self->NorthQueueSize--;
-				increaseCarsOnBridge(self, 0);
 				PRINT(self->NorthQueueSize, self->gui->NorthScreenPos);
+				increaseCarsOnBridge(self, 0);
 			}else{
 				switchSide(self, 0);
 			}
-		}else if(side == SOUTH && self->SouthGreen && (self->CarDirection == SOUTH)){
+		}else if(self->SouthGreen && (self->CarDirection == SOUTH)){
 			if(self->SouthQueueSize > 0){
 				self->SouthQueueSize--;
-				increaseCarsOnBridge(self, 0);
 				PRINT(self->SouthQueueSize, self->gui->SouthScreenPos);
+				increaseCarsOnBridge(self, 0);
 			}else{
 				switchSide(self, 0);
 			}
 		}
-	AFTER(SEC(1), self, deQueue, side);
 	}else{
-		int opposite = self->CarDirection ? self->NorthQueueSize : self->SouthQueueSize;
+		int opposite = self->CarDirection ? self->SouthQueueSize : self->NorthQueueSize;
+		
 		if(opposite){
 			switchSide(self, 0);
 		}
 	}
+	AFTER(SEC(1), self, deQueue, 0);
 	return 0;
 }
 
@@ -54,8 +55,7 @@ int removeCarBridge(Bridge *self, __attribute__((unused)) int unUsed){
 
 int increaseCarsOnBridge(Bridge *self, int __attribute__((unused)) unUsed){
 	self->CarsOnBridge++;
-	PRINT(self->CarsOnBridge, self->gui->SouthScreenPos);
-	AFTER(SEC(1), self, deQueue, 0);
+	PRINT(self->CarsOnBridge, 2);
 	AFTER(SEC(5), self, removeCarBridge, 0);
 	return 0;
 }
@@ -79,15 +79,16 @@ int setRedBoth(Bridge *self, int __attribute__((unused)) unUsed){
 }
 
 int switchSide(Bridge *self, int __attribute__((unused)) unUsed){
+	self->CarsPassedCurrent = 0;
 	if(self->CarsOnBridge != 0){
 		if(self->NorthGreen || self->SouthGreen) setRedBoth(self, 0);
-		AFTER(SEC(1), self, switchSide, 0);
+		AFTER(MSEC(1250),self, switchSide, 0);
 	}else{
-		if(self->CarDirection && self->SouthQueueSize){
+		if(self->CarDirection){
 			self->SouthGreen = true;
 			self->NorthGreen = false;
 			self->CarDirection = SOUTH;
-		}else if(!self->CarDirection && self->NorthQueueSize){
+		}else if(!self->CarDirection){
 			self->NorthGreen = true;
 			self->SouthGreen = false;
 			self->CarDirection = NORTH;
@@ -103,7 +104,7 @@ int handelInput(Bridge *self, int data){
 			enQueue(self, NORTH);
 			break;
 		case NorthDeQueue:
-			deQueue(self,NORTH);
+			deQueue(self, NORTH);
 			break;
 		case SouthEnQueue:
 			enQueue(self, SOUTH);

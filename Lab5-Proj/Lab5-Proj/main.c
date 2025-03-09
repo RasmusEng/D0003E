@@ -17,5 +17,5 @@ int main(void)
 	
 	INSTALL(&inter, input, IRQ_USART0_RX);
 	
-	return TINYTIMBER(&lcd, startSequence, 1);
+	return TINYTIMBER(&bridge, deQueue, 0);
 }

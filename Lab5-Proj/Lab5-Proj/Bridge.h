@@ -22,8 +22,9 @@ typedef struct
 	bool SouthGreen;
 } Bridge;
 
-#define initBridge(gui, usart, lcd) {initObject(), gui, usart, lcd, 0,0,0,0,false,false,false,false}
+#define initBridge(gui, usart, lcd) {initObject(), gui, usart, lcd, 0,0,0,0,false,false,true}
 
 int handelInput(Bridge *self, int data);
+int deQueue(Bridge *self, int side);
 
 #endif /* BRIDGE_H_ */
