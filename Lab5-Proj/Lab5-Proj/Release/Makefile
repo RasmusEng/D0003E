@@ -38,7 +38,6 @@ SUBDIRS :=
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../Bridge.c \
-../GUI.c \
 ../INIT.c \
 ../InteruptHandler.c \
 ../LCD_Driver.c \
@@ -55,7 +54,6 @@ ASM_SRCS +=
 
 OBJS +=  \
 Bridge.o \
-GUI.o \
 INIT.o \
 InteruptHandler.o \
 LCD_Driver.o \
@@ -65,7 +63,6 @@ USARTSender.o
 
 OBJS_AS_ARGS +=  \
 Bridge.o \
-GUI.o \
 INIT.o \
 InteruptHandler.o \
 LCD_Driver.o \
@@ -75,7 +72,6 @@ USARTSender.o
 
 C_DEPS +=  \
 Bridge.d \
-GUI.d \
 INIT.d \
 InteruptHandler.d \
 LCD_Driver.d \
@@ -85,7 +81,6 @@ USARTSender.d
 
 C_DEPS_AS_ARGS +=  \
 Bridge.d \
-GUI.d \
 INIT.d \
 InteruptHandler.d \
 LCD_Driver.d \
@@ -108,13 +103,6 @@ LINKER_SCRIPT_DEP+=
 
 # AVR32/GNU C Compiler
 ./Bridge.o: .././Bridge.c
-	@echo Building file: $<
-	@echo Invoking: AVR/GNU C Compiler : 5.4.0
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DNDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -Wextra -mmcu=atmega169p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega169p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
-	@echo Finished building: $<
-	
-
-./GUI.o: .././GUI.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DNDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -Wextra -mmcu=atmega169p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega169p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

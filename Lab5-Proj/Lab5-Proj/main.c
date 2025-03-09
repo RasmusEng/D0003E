@@ -4,7 +4,6 @@
 #include "LCD_Driver.h"
 #include "Bridge.h"
 #include "Init.h"
-#include "GUI.h"
 
 int main(void)
 {
@@ -12,7 +11,7 @@ int main(void)
 	GUI gui = initGUI();
 	LCD_Driver lcd = initLCD_Driver();
 	USARTSender usart = initUSARTSender();
-	Bridge bridge = initBridge(&gui, &usart, &lcd);
+	Bridge bridge = initBridge(&usart, &lcd);
 	InterruptHandler inter = initInterruptHandler(&bridge);
 	
 	INSTALL(&inter, input, IRQ_USART0_RX);

@@ -4,8 +4,6 @@
 
 Bridge.c
 
-GUI.c
-
 INIT.c
 
 InteruptHandler.c

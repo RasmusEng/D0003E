@@ -6,95 +6,94 @@
 #define NorthDeQueue 0b0010
 #define SouthEnQueue 0b0100
 #define SouthDeQueue 0b1000
+
 #define NORTH 1
 #define SOUTH 0
-#define PRINT(value, pos) ASYNC(self->gui, printAt, PACK_PRINT(value, pos))
+#define PRINT(value, pos) ASYNC(self->lcd, printAt, PACK_PRINT(value, pos))
 #define SENDSIGNAL ASYNC(self->usart, sendSignal, (self->NorthGreen << 0) | (!self->NorthGreen << 1)  | (self->SouthGreen << 2) | (!self->SouthGreen << 3))
 
-int increaseCarsOnBridge(Bridge*, int);
-int switchSide(Bridge*, int);
-
-int deQueue(Bridge *self, int side){
-	if(self->CarsPassedCurrent<10){
-		if(self->NorthGreen && (self->CarDirection == NORTH)){
-			if(self->NorthQueueSize > 0){
-				self->NorthQueueSize--;
-				PRINT(self->NorthQueueSize, self->gui->NorthScreenPos);
-				increaseCarsOnBridge(self, 0);
-			}else{
-				switchSide(self, 0);
-			}
-		}else if(self->SouthGreen && (self->CarDirection == SOUTH)){
-			if(self->SouthQueueSize > 0){
-				self->SouthQueueSize--;
-				PRINT(self->SouthQueueSize, self->gui->SouthScreenPos);
-				increaseCarsOnBridge(self, 0);
-			}else{
-				switchSide(self, 0);
-			}
-		}
-	}else{
-		int opposite = self->CarDirection ? self->SouthQueueSize : self->NorthQueueSize;
-		
-		if(opposite){
-			switchSide(self, 0);
-		}
-	}
-	AFTER(SEC(1), self, deQueue, 0);
-	return 0;
-}
-
-int removeCarBridge(Bridge *self, __attribute__((unused)) int unUsed){
-	if(self->CarsOnBridge > 0){ //Should not be needed but added for saftey
-		self->CarsOnBridge--;
-		self->CarsPassedCurrent++;
-		PRINT(self->CarsOnBridge, self->gui->CarsOnBridgePos);
-	}
-	return 0;
-}
-
-int increaseCarsOnBridge(Bridge *self, int __attribute__((unused)) unUsed){
-	self->CarsOnBridge++;
-	PRINT(self->CarsOnBridge, 2);
-	AFTER(SEC(5), self, removeCarBridge, 0);
-	return 0;
-}
+int removeCarBridge(Bridge*, int);
 
 int enQueue(Bridge *self, int side){
 	if(side == NORTH){
 		self->NorthQueueSize++;
-		PRINT(self->NorthQueueSize, self->gui->NorthScreenPos);
+		PRINT(self->NorthQueueSize, self->lcd->NorthScreenPos);
 	}else if(side == SOUTH){
 		self->SouthQueueSize++;
-		PRINT(self->SouthQueueSize, self->gui->SouthScreenPos);
+		PRINT(self->SouthQueueSize, self->lcd->SouthScreenPos);
 	}
 	return 0;
 }
 
-int setRedBoth(Bridge *self, int __attribute__((unused)) unUsed){
+int setRedBoth(Bridge *self, __attribute__((unused)) int unUsed){
 	self->NorthGreen = false;
 	self->SouthGreen = false;
-	SENDSIGNAL;
+	
 	return 0;
 }
 
-int switchSide(Bridge *self, int __attribute__((unused)) unUsed){
-	self->CarsPassedCurrent = 0;
+int convertBack(Bridge *self, int side){
+	if(side == NORTH){
+		self->NorthGreen = true;
+		self->SouthGreen = false;
+	}else if(side == SOUTH){
+		self->NorthGreen = false;
+		self->SouthGreen = true;
+	}
+	SENDSIGNAL;
+}
+
+int deQueue(Bridge *self, int side){
+	if(side == NORTH){
+		self->NorthQueueSize--;
+		setRedBoth(self, 0);
+		AFTER(MSEC(1000), self, convertBack, side);
+		PRINT(self->NorthQueueSize, self->lcd->NorthScreenPos);
+	}else if(side == SOUTH){
+		self->SouthQueueSize--;
+		setRedBoth(self, 0);
+		PRINT(self->SouthQueueSize, self->lcd->SouthScreenPos);
+	}
+	self->CarsSentCurrent++;
+	self->CarsOnBridge++;
+	PRINT(self->CarsOnBridge, self->lcd->CarsOnBridgePos);
+	AFTER(MSEC(5000), self, removeCarBridge, 0);
+	return 0;
+}
+
+int removeCarBridge(Bridge *self, __attribute__((unused)) int unUsed){
+	self->CarsOnBridge--;
+	PRINT(self->CarsOnBridge, self->lcd->CarsOnBridgePos);
+	return 0;
+}
+
+int switchSide(Bridge *self, __attribute__((unused)) int unUsed){
 	if(self->CarsOnBridge != 0){
-		if(self->NorthGreen || self->SouthGreen) setRedBoth(self, 0);
-		AFTER(MSEC(1250),self, switchSide, 0);
+		setRedBoth(self, 0);
+		SENDSIGNAL;
 	}else{
 		if(self->CarDirection){
-			self->SouthGreen = true;
 			self->NorthGreen = false;
-			self->CarDirection = SOUTH;
-		}else if(!self->CarDirection){
+			self->SouthGreen = true;
+		}else{
 			self->NorthGreen = true;
 			self->SouthGreen = false;
-			self->CarDirection = NORTH;
 		}
 		SENDSIGNAL;
+		
+		self->CarDirection = !self->CarDirection;
+		self->CarsSentCurrent = 0;
 	}
+}
+
+int idle(Bridge *self, __attribute__((unused)) int unUsed){
+	if(self->CarsSentCurrent >= 5){ //Starvation
+		ASYNC(self, switchSide, 0);
+	}else{ 
+		//Fix so not stopped waiting for 5 cars from each side before switch
+		if((self->CarDirection && self->NorthQueueSize == 0) || (!self->CarDirection && self->SouthQueueSize == 0)) ASYNC(self, switchSide, 0);
+	}
+	AFTER(MSEC(1000), self, idle, 0);
 	return 0;
 }
 
