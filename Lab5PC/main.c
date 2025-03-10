@@ -1,64 +1,66 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
-#include <dispatch/dispatch.h>
+#include <fcntl.h>
+#include <termios.h>
 #include <unistd.h>
+#include <pthread.h>
+#include "init.h"
+#include "Display.h"
+#include "cerialManager.h"
+#include "Bridge.h"
+#include "threadStruct.h"
 
-#define MAX_CARS 100000000 // Max antal bilar i kön
+#define NORTHDEQUEUE = 0b0010;
+#define SOUTHDEQUEUE = 0b1000;
 
-dispatch_semaphore_t bridge;  // GCD-semafor för bron
-
-void* car_simulation(void* arg) {
-    char direction = *(char*)arg;
-    free(arg);
-
-    printf("Bil från %c väntar på att korsa bron...\n", direction);
-    dispatch_semaphore_wait(bridge, DISPATCH_TIME_FOREVER);
-
-    printf("Bil från %c har korsat bron.\n", direction);
-    dispatch_semaphore_signal(bridge);
-
-    return NULL;
-}
-
-int main() {
-    pthread_t cars[MAX_CARS];
-    int car_count = 0;
-    char input;
-
-    bridge = dispatch_semaphore_create(1);  // Initiera semafor (1 bil åt gången)
-
+void menu(){
     printf("Kommando:\n");
     printf("  's' - Ny bil söderut\n");
     printf("  'n' - Ny bil norrut\n");
     printf("  'e' - Avsluta simulatorn\n");
+}
 
-    while (1) {
-        printf("\e[1;1H\e[2J");
+void commands(int serial_port, Bridge *b){
+    uint8_t SOUTH = 0b0100;
+    uint8_t NORTH = 0b0001; 
+    char input;
+    while(1){
         input = getchar();
-        while (getchar() != '\n');  // Rensa bufferten
-
-        if (input == 'e') {
-            printf("Avslutar simulatorn...\n");
+        while (getchar() != '\n');
+        if (input == 'e'){
+            printf("---Avslutar Bridge Simulator Controll Center---");
             break;
-        } else if (input == 's' || input == 'n') {
-            if (car_count >= MAX_CARS) {
-                printf("Max antal bilar nått!\n");
-                continue;
-            }
-
-            char* direction = malloc(sizeof(char));
-            *direction = input;
-            pthread_create(&cars[car_count], NULL, car_simulation, direction);
-            car_count++;
-        } else {
-            printf("Felaktigt kommando! Använd 's', 'n' eller 'e'.\n");
+        }
+        else if (input == 'n'){
+            addCarQueue(b, 1);
+            printStatus(b);
+            write(serial_port, &NORTH, 1);
+            continue;
+        }
+        else if (input == 's'){
+            addCarQueue(b, 0);
+            printStatus(b);
+            write(serial_port, &SOUTH, 1);
+            continue;
         }
     }
+}
 
-    for (int i = 0; i < car_count; i++) {
-        pthread_join(cars[i], NULL);
-    }
+int main() {
+    printf("---Bridge Simulator Controll Center---\n");
+    menu();
+    printf("--------------------------------------\n");
+    int serial_port = init();
+    Bridge bridge = initBridge();
+    ThreadArgs thread = initThreadArgs(serial_port, &bridge);
+    printStatus(&bridge);
 
+    pthread_t threadID;
+
+    pthread_create(&threadID, NULL, readAVR, &thread);
+    
+    commands(serial_port, &bridge);
+    
+    close(serial_port);
     return 0;
 }
