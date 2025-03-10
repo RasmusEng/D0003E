@@ -37,8 +37,9 @@ int main(void)
 	INIT();
 	while (1)
 	{
-		uint8_t temp = USART_Receive();
-		USART_Transmit(temp);
+		//uint8_t temp = USART_Receive();
+		uint8_t data = 0b0101;
+		USART_Transmit(data);
 	}
 }
 
