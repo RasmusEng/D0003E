@@ -33,14 +33,30 @@ int setRedBoth(Bridge *self, __attribute__((unused)) int unUsed){
 }
 
 int convertBack(Bridge *self, int side){
-	if(side == NORTH){
-		self->NorthGreen = true;
-		self->SouthGreen = false;
-	}else if(side == SOUTH){
-		self->NorthGreen = false;
-		self->SouthGreen = true;
+	if(self->CarsSentCurrent >= 5){
+		int oppositeQueue = self->CarDirection ? self->SouthQueueSize : self->NorthQueueSize;
+		if(self->CarsOnBridge == 0 && oppositeQueue != 0){
+			if(self->CarDirection == NORTH){
+				self->NorthGreen = false;
+				self->SouthGreen = true;
+			}else{
+				self->NorthGreen = true;
+				self->SouthGreen = false;
+			}
+		}
+		AFTER(MSEC(1000), self, convertBack, 0);
+	}else{
+		if(side == NORTH){
+			self->NorthGreen = true;
+			self->SouthGreen = false;
+		}else if(side == SOUTH){
+			self->NorthGreen = false;
+			self->SouthGreen = true;
+		}
 	}
 	SENDSIGNAL;
+	
+	return 0;
 }
 
 int deQueue(Bridge *self, int side){
@@ -64,36 +80,6 @@ int deQueue(Bridge *self, int side){
 int removeCarBridge(Bridge *self, __attribute__((unused)) int unUsed){
 	self->CarsOnBridge--;
 	PRINT(self->CarsOnBridge, self->lcd->CarsOnBridgePos);
-	return 0;
-}
-
-int switchSide(Bridge *self, __attribute__((unused)) int unUsed){
-	if(self->CarsOnBridge != 0){
-		setRedBoth(self, 0);
-		SENDSIGNAL;
-	}else{
-		if(self->CarDirection){
-			self->NorthGreen = false;
-			self->SouthGreen = true;
-		}else{
-			self->NorthGreen = true;
-			self->SouthGreen = false;
-		}
-		SENDSIGNAL;
-		
-		self->CarDirection = !self->CarDirection;
-		self->CarsSentCurrent = 0;
-	}
-}
-
-int idle(Bridge *self, __attribute__((unused)) int unUsed){
-	if(self->CarsSentCurrent >= 5){ //Starvation
-		ASYNC(self, switchSide, 0);
-	}else{ 
-		//Fix so not stopped waiting for 5 cars from each side before switch
-		if((self->CarDirection && self->NorthQueueSize == 0) || (!self->CarDirection && self->SouthQueueSize == 0)) ASYNC(self, switchSide, 0);
-	}
-	AFTER(MSEC(1000), self, idle, 0);
 	return 0;
 }
 
