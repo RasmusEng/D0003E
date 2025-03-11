@@ -4,6 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <pthread.h>
+#include "threadStruct.h"
 
 typedef struct{
     bool northGreen;
@@ -17,4 +22,8 @@ typedef struct{
 
 void addCarQueue(Bridge *b, int Side);
 void changeLights(Bridge *b, bool north, bool south);
+void handelInput(void *t, uint8_t data);
+void removeCarBridge(Bridge *b);
+void *idleFunction(void *t);
+
 #endif

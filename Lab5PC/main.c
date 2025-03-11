@@ -10,9 +10,6 @@
 #include "Bridge.h"
 #include "threadStruct.h"
 
-#define NORTHDEQUEUE = 0b0010;
-#define SOUTHDEQUEUE = 0b1000;
-
 void menu(){
     printf("Kommando:\n");
     printf("  's' - Ny bil söderut\n");
@@ -33,13 +30,11 @@ void commands(int serial_port, Bridge *b){
         }
         else if (input == 'n'){
             addCarQueue(b, 1);
-            printStatus(b);
             write(serial_port, &NORTH, 1);
             continue;
         }
         else if (input == 's'){
             addCarQueue(b, 0);
-            printStatus(b);
             write(serial_port, &SOUTH, 1);
             continue;
         }
@@ -50,13 +45,14 @@ int main() {
     printf("---Bridge Simulator Controll Center---\n");
     menu();
     printf("--------------------------------------\n");
+
     int serial_port = init();
     Bridge bridge = initBridge();
     ThreadArgs thread = initThreadArgs(serial_port, &bridge);
+
     printStatus(&bridge);
 
     pthread_t threadID;
-
     pthread_create(&threadID, NULL, readAVR, &thread);
     
     commands(serial_port, &bridge);
