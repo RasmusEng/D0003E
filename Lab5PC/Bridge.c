@@ -1,12 +1,13 @@
 #include "Bridge.h"
+#include "Display.h"
 #include <pthread.h>
-
+#include "threadStruct.h"
 pthread_mutex_t block;
 
-pthread carRemover;
+pthread_t carRemover;
 
 void *idleFunction(void *t){
-    Bridge* b = (Bridge *)b;
+    Bridge* b = (Bridge *)t;
     sleep(5);
     removeCarBridge(b);
     pthread_exit(NULL);
@@ -41,37 +42,39 @@ void changeLights(Bridge *b, bool north, bool south){
 
 void handelInput(void *t, uint8_t data){
     ThreadArgs *ts = (ThreadArgs *)t;
-    u_int8_t sendData;
+    Bridge *b = (Bridge *)ts->bridge;
+    uint8_t sendData;
     switch(data){
         case 0b1010: //North = red, South = red
-            changeLights((void *)&(ts->bridge), false, false);
+            changeLights(b, false, false);
             break;
         case 0b1001: //North = green, south = red
             sendData = 0b0010;  
-            changeLights((void *)&(ts->bridge), true, false);
-            if((void *)&(ts->bridge->northQueueSize)){
+            changeLights(b, true, false);
+            if(b->northQueueSize){
                 pthread_mutex_lock(&block);
-                (void *)&(ts->bridge->northQueueSize--);
+                b->northQueueSize--;
                 sendToAvr((void *)&(ts->serial_port), sendData);
-                printStatus((void *)&(ts->bridge));
+                b->carsOnBridge++;
+                printStatus(b);
                 pthread_mutex_unlock(&block);
                 pthread_create(&carRemover, NULL, idleFunction, b);
             }
             break;
         case 0b0110: //North = red, south = green
             sendData = 0b1000;
-            changeLights((void *)&(ts->bridge), false, true);
-            if((void *)&(ts->bridge->southQueueSize)){
+            changeLights(b, false, true);
+            if(b->southQueueSize){
                 pthread_mutex_lock(&block);
-                (void *)&(ts->bridge->southQueueSize--);
+                b->southQueueSize--;
                 sendToAvr((void *)&(ts->serial_port), sendData);
-                printStatus((void *)&(ts->bridge));
+                b->carsOnBridge++;
+                printStatus(b);
                 pthread_mutex_unlock(&block);
-                pthread_create(&carRemover, NULL, idleFunction, b);c
+                pthread_create(&carRemover, NULL, idleFunction, b);
             }
             break;
         default: //This is fucked up
             break;
     }
-    printStatus((void *)&(ts->bridge));
 }

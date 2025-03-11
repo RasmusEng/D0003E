@@ -46,8 +46,8 @@ int main() {
     menu();
     printf("--------------------------------------\n");
 
-    int serial_port = init();
     Bridge bridge = initBridge();
+    int serial_port = init();
     ThreadArgs thread = initThreadArgs(serial_port, &bridge);
 
     printStatus(&bridge);

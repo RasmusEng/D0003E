@@ -10,7 +10,7 @@
 #include "threadStruct.h"
 
 
-void *readAVR(void *Threads);
-void handelInput(void *Threads, uint8_t data);
-void sendToAvr(void *Threads, uint8_t command);
+void *readAVR(void *t);
+void handelInput(void *t, uint8_t data);
+void sendToAvr(void *t, uint8_t command);
 #endif

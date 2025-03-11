@@ -16,7 +16,7 @@ void printStatus(Bridge *b)
         printf(CYN "%s" RESET, "  ");
         if (b->southGreen)
         {
-                printf(GRN "%s" RESET, "O");
+        printf(GRN "%s" RESET, "O");
         }
         else
         {

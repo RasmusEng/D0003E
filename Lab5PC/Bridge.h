@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <pthread.h>
-#include "threadStruct.h"
+#include "cerialManager.h"
 
 typedef struct{
     bool northGreen;

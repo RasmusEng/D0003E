@@ -11,9 +11,9 @@
 
 typedef struct {
     int serial_port;
-    Bridge *bridge;
+    void *bridge;
 } ThreadArgs;
 
-#define initThreadArgs(serialPort, bridge) {serialPort, bridge};
+#define initThreadArgs(serialPort, bridge2) ((ThreadArgs){serialPort, bridge2})
 
 #endif
