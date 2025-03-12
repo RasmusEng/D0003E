@@ -85,7 +85,8 @@ ISR(TIMER1_COMPA_vect){
 }	
 
 int main(void)
-{    
+{    	
+	//Lab3Alt3
 	init();
 	computePrimes(0);
 }
