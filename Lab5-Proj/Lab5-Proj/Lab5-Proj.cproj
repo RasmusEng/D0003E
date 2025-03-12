@@ -155,12 +155,6 @@
     <Compile Include="Bridge.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="GUI.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="GUI.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="INIT.c">
       <SubType>compile</SubType>
     </Compile>

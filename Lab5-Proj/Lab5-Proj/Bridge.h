@@ -10,21 +10,21 @@
 typedef struct  
 {
 	Object super;
-	GUI *gui;
 	USARTSender *usart;
 	LCD_Driver *lcd;
 	int NorthQueueSize;
 	int SouthQueueSize;
 	int CarsOnBridge;
-	int CarsPassedCurrent;
+	int CarsSentCurrent;
+	bool forceRED;
 	bool NorthGreen;
 	bool CarDirection;
 	bool SouthGreen;
 } Bridge;
 
-#define initBridge(gui, usart, lcd) {initObject(), gui, usart, lcd, 0,0,0,0,false,false,true}
+#define initBridge(usart, lcd) {initObject(), usart, lcd, 0,0,0,0,false, false,false,false}
 
-int handelInput(Bridge *self, int data);
+int handleInput(Bridge *self, int data);
 int deQueue(Bridge *self, int side);
 
 #endif /* BRIDGE_H_ */

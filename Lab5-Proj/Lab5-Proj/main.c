@@ -4,18 +4,16 @@
 #include "LCD_Driver.h"
 #include "Bridge.h"
 #include "Init.h"
-#include "GUI.h"
 
 int main(void)
 {
 	init();
-	GUI gui = initGUI();
 	LCD_Driver lcd = initLCD_Driver();
 	USARTSender usart = initUSARTSender();
-	Bridge bridge = initBridge(&gui, &usart, &lcd);
+	Bridge bridge = initBridge(&usart, &lcd);
 	InterruptHandler inter = initInterruptHandler(&bridge);
 	
 	INSTALL(&inter, input, IRQ_USART0_RX);
 	
-	return TINYTIMBER(&bridge, deQueue, 0);
+	return TINYTIMBER(NULL, NULL, NULL);
 }

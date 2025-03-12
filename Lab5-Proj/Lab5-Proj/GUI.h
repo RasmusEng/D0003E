@@ -11,6 +11,6 @@ typedef struct
 	int CarsOnBridgePos;
 }GUI;
 
-#define initGUI() {initObject(), 4,0,2}
+#define initGUI() {initObject(), 4, 0, 2}
 
 #endif /* GUI_H_ */

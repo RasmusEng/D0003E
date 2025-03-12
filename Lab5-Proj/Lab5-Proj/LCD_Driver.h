@@ -10,9 +10,12 @@
 typedef struct
 {
 	Object super;
+	int ConstNorthScreenPos;
+	int ConstSouthScreenPos;
+	int ConstCarsOnBridgePos;
 } LCD_Driver;
 
-#define initLCD_Driver() {initObject()}
+#define initLCD_Driver() {initObject(),4,0,2}
 	
 struct Packed {
 	unsigned int num  : 7;
