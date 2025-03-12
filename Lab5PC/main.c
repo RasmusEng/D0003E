@@ -38,6 +38,7 @@ void commands(int serial_port, Bridge *b){
             write(serial_port, &SOUTH, 1);
             continue;
         }
+        sleep(1);
     }
 }
 
